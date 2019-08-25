@@ -44,43 +44,57 @@ uint16_t ComputerState::get_program_counter()
 
 void ComputerState::set_accumulator(uint8_t new_accumulator)
 {
-
+    accumulator = new_accumulator;
 }
+
 void ComputerState::set_x(uint8_t new_x)
 {
-
+    x = new_x;
 }
+
 void ComputerState::set_y(uint8_t new_y)
 {
-
+    y = new_y;
 }
+
 void ComputerState::set_status(uint8_t new_status)
 {
-
+    status = new_status;
 }
+
 void ComputerState::set_stack_pointer(uint8_t new_stack_pointer)
 {
-
+    stack_pointer = new_stack_pointer;
 }
+
 void ComputerState::set_program_counter(uint16_t new_program_counter)
 {
-
+    program_counter = new_program_counter;
 }
 
 uint8_t ComputerState::get_byte_from_memory(uint16_t index)
 {
-
+    return memory[index];
 }
+
 uint16_t ComputerState::get_word_from_memory(uint16_t index)
 {
+    uint16_t word;
 
+    word = memory[index];
+    word |= memory[index + 1] << 8;
+
+    return word;
 }
 
 void ComputerState::set_byte_to_memory(uint16_t index, uint8_t byte)
 {
-
+    memory[index] = byte;
 }
+
 void ComputerState::set_word_to_memory(uint16_t index, uint16_t word)
 {
-
+    memory[index] = word & 0xFF; 
+    memory[index + 1] = (word >> 8) & 0xFF; 
 }
+
