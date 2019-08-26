@@ -1,26 +1,26 @@
 #include <Computer.hpp>
 #include <Instructions.hpp>
 
-Computer::Computer(size_t memory_size) state(memory_size) {}
+Computer::Computer(size_t memory_size) : state(memory_size), instructions() {}
 
 
-Computer::load_memory(const char* filename)
+void Computer::load_memory(std::vector<uint8_t> data)
 {
-    state.load_memory(filename);
+    state.load_memory(data);
 }
 
-Computer::dump_memory(const char* filename)
+std::vector<uint8_t> Computer::dump_memory()
 {
-    state.dump_memory(filename);
+    return state.dump_memory();
 }
 
 
-Computer::execute(size_t steps)
+void Computer::step(size_t steps)
 {
     for (size_t step = 0; step < steps; ++step) {
-        uint16_t pc = state.set_program_counter();
+        uint16_t pc = state.get_program_counter();
         uint8_t instruction = state.get_byte_from_memory(pc);
-
+        instructions.execute(instruction, state);
     }
 }
 

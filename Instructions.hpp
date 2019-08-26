@@ -1,14 +1,20 @@
-#IFNDEF INSTRUCTIONS_H
-#DEFINE INSTRUCTIONS_H
+#ifndef INSTRUCTIONS_H
+#define INSTRUCTIONS_H
 
 #include <array>
 #include "ComputerState.hpp"
 
-typedef void (*InstructionFunction)(&ComputerState);
+class Instructions
+{
+public:
+    Instructions();
 
-extern std::array<InstructionFunction, 256> instruction_array;
-void register_instructions();
+    void execute(uint8_t opcode, ComputerState &computer_state);
+    static void execute_nop(ComputerState &computer_state);
 
-void execute_nop(ComputerState &computer_state);
+private:
+    typedef void (*InstructionFunction)(ComputerState&);
+    std::array<InstructionFunction, 256> instruction_array;
+};
 
-#ENDIF // header guard for INSTRUCTIONS_H
+#endif // header guard for INSTRUCTIONS_H

@@ -1,9 +1,10 @@
 #include <fstream>
-#include "ComputerState.h"
+#include <cassert>
+#include "ComputerState.hpp"
 
 ComputerState::ComputerState(size_t memory_size)
 {
-    memory = std::vector<uint8_t>(size_t memory_size);
+    memory = std::vector<uint8_t>(memory_size);
 
     uint8_t accumulator = 0;
     uint8_t x = 0;
@@ -104,23 +105,31 @@ size_t ComputerState::memory_size()
     return memory.size();
 }
 
-void ComputerState::load_memory()
+void ComputerState::load_memory(const char* filename)
 {
-    std::ifstream file(filePath, std::ios::binary);
+    std::ifstream file(filename, std::ios::binary);
     assert(!file.fail());
 
     file.seekg(0, std::ios::end);
     int size = file.tellg();
-    assert(state.memory_size() >= size);
+    assert(memory.size() >= size);
     file.seekg(0, std::ios::beg);
 
-    file.read(memory.data(), size);
+    file.read((char*) memory.data(), size);
 }
 
-void ComputerState::dump_memory()
+void ComputerState::dump_memory(const char* filename)
 {
-    std::ofstream file(filePath, std::ios::binary);
+    std::ofstream file(filename, std::ios::binary);
     assert(!file.fail());
-    file.write(memory.data(), memory.size());
+    file.write((char*) memory.data(), memory.size());
 }
 
+void ComputerState::load_memory(std::vector<uint8_t> data) {
+    assert(data.size() <= memory.size());
+    memory.assign(data.begin(), data.end());
+}
+
+std::vector<uint8_t> ComputerState::dump_memory() {
+    return memory;
+}

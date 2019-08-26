@@ -1,5 +1,5 @@
-#IFNDEF COMPUTERSTATE_H
-#DEFINE COMPUTERSTATE_H
+#ifndef COMPUTERSTATE_H
+#define COMPUTERSTATE_H
 
 #include <vector>
 #include <cstdint>
@@ -34,6 +34,9 @@ public:
     void load_memory(const char* filename);
     void dump_memory(const char* filename);
 
+    void load_memory(std::vector<uint8_t> data);
+    std::vector<uint8_t> dump_memory();
+
 private:
     uint8_t accumulator;
     uint8_t x;
@@ -43,7 +46,7 @@ private:
     uint16_t program_counter;
 
     std::vector<uint8_t> memory;
-}
+};
 
 
-#ENDIF // header guard for COMPUTERSTATE_H
+#endif // header guard for COMPUTERSTATE_H

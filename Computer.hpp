@@ -1,21 +1,23 @@
-#IFNDEF COMPUTER_H
-#DEFINE COMPUTER_H
+#ifndef COMPUTER_H
+#define COMPUTER_H
 
 #include "ComputerState.hpp"
+#include "Instructions.hpp"
 
 class Computer
 {
 public:
     Computer(size_t memory_size);
 
-    load_memory(const char* filename);
-    dump_memory(const char* filename);
+    void load_memory(std::vector<uint8_t> data);
+    std::vector<uint8_t> dump_memory();
 
-    execute(size_t steps);
+    void step(size_t steps);
 
 private:
     ComputerState state;
-}
+    Instructions instructions;
+};
 
 
-#ENDIF // header guard for COMPUTER_H
+#endif // header guard for COMPUTER_H
