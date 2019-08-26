@@ -1,6 +1,9 @@
 #IFNDEF COMPUTERSTATE_H
 #DEFINE COMPUTERSTATE_H
 
+#include <vector>
+#include <cstdint>
+
 class ComputerState
 {
 public:
@@ -25,6 +28,11 @@ public:
 
     void set_byte_to_memory(uint16_t index, uint8_t byte);
     void set_word_to_memory(uint16_t index, uint16_t word);
+
+    size_t memory_size();
+
+    void load_memory(const char* filename);
+    void dump_memory(const char* filename);
 
 private:
     uint8_t accumulator;

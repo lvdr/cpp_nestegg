@@ -1,3 +1,4 @@
+#include <fstream>
 #include "ComputerState.h"
 
 ComputerState::ComputerState(size_t memory_size)
@@ -94,7 +95,32 @@ void ComputerState::set_byte_to_memory(uint16_t index, uint8_t byte)
 
 void ComputerState::set_word_to_memory(uint16_t index, uint16_t word)
 {
-    memory[index] = word & 0xFF; 
-    memory[index + 1] = (word >> 8) & 0xFF; 
+    memory[index] = word & 0xFF;
+    memory[index + 1] = (word >> 8) & 0xFF;
+}
+
+size_t ComputerState::memory_size()
+{
+    return memory.size();
+}
+
+void ComputerState::load_memory()
+{
+    std::ifstream file(filePath, std::ios::binary);
+    assert(!file.fail());
+
+    file.seekg(0, std::ios::end);
+    int size = file.tellg();
+    assert(state.memory_size() >= size);
+    file.seekg(0, std::ios::beg);
+
+    file.read(memory.data(), size);
+}
+
+void ComputerState::dump_memory()
+{
+    std::ofstream file(filePath, std::ios::binary);
+    assert(!file.fail());
+    file.write(memory.data(), memory.size());
 }
 
