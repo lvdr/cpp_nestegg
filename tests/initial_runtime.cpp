@@ -1,8 +1,8 @@
 #include <cstdio>
-#include "Computer.hpp"
+#include "ComputerState.hpp"
 
 int main() {
-    Computer comp(200);
+    ComputerState comp(200);
     comp.step(10);
     printf("Pass!\n");
     return 0;

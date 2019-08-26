@@ -2,7 +2,7 @@
 #include <cassert>
 #include "ComputerState.hpp"
 
-ComputerState::ComputerState(size_t memory_size)
+ComputerState::ComputerState(size_t memory_size) : instructions()
 {
     memory = std::vector<uint8_t>(memory_size);
 
@@ -132,4 +132,13 @@ void ComputerState::load_memory(std::vector<uint8_t> data) {
 
 std::vector<uint8_t> ComputerState::dump_memory() {
     return memory;
+}
+
+void ComputerState::step(size_t steps)
+{
+    for (size_t step = 0; step < steps; ++step) {
+        uint16_t pc = get_program_counter();
+        uint8_t instruction = get_byte_from_memory(pc);
+        instructions.execute(instruction, *this);
+    }
 }

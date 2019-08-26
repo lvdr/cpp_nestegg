@@ -2,7 +2,8 @@
 #define INSTRUCTIONS_H
 
 #include <array>
-#include "ComputerState.hpp"
+
+class ComputerState;
 
 class Instructions
 {

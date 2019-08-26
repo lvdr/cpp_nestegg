@@ -4,6 +4,10 @@
 #include <vector>
 #include <cstdint>
 
+class ComputerState;
+
+#include "Instructions.hpp"
+
 class ComputerState
 {
 public:
@@ -37,7 +41,11 @@ public:
     void load_memory(std::vector<uint8_t> data);
     std::vector<uint8_t> dump_memory();
 
+    void step(size_t steps);
+
 private:
+    Instructions instructions;
+
     uint8_t accumulator;
     uint8_t x;
     uint8_t y;

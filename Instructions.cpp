@@ -1,4 +1,5 @@
 #include "Instructions.hpp"
+#include "ComputerState.hpp"
 
 Instructions::Instructions()
 {
