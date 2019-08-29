@@ -74,6 +74,15 @@ void ComputerState::set_program_counter(uint16_t new_program_counter)
     program_counter = new_program_counter;
 }
 
+
+uint8_t ComputerState::get_status_flag(StatusFlag status_flag)
+{
+    uint8_t index = std::static_cast<uint8_t>(status_flag); 
+    uint8_t flag = status >> index;
+
+    return flag & 0x1;
+}
+
 uint8_t ComputerState::get_byte_from_memory(uint16_t index)
 {
     return memory[index];
@@ -125,12 +134,14 @@ void ComputerState::dump_memory(const char* filename)
     file.write((char*) memory.data(), memory.size());
 }
 
-void ComputerState::load_memory(std::vector<uint8_t> data) {
+void ComputerState::load_memory(std::vector<uint8_t> data)
+{
     assert(data.size() <= memory.size());
     memory.assign(data.begin(), data.end());
 }
 
-std::vector<uint8_t> ComputerState::dump_memory() {
+std::vector<uint8_t> ComputerState::dump_memory()
+{
     return memory;
 }
 

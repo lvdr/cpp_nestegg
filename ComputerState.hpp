@@ -11,6 +11,18 @@ class ComputerState;
 class ComputerState
 {
 public:
+    enum class StatusFlag
+    {
+        CARRY     = 0,
+        ZERO      = 1,
+        INTERRUPT = 2,
+        DECIMAL   = 3,
+        BREAK     = 4,
+        RESERVED  = 5,
+        OVERFLOW  = 6,
+        NEGATIVE  = 7
+    };
+
     ComputerState(size_t memory_size);
 
     uint8_t get_accumulator();
@@ -26,6 +38,8 @@ public:
     void set_status(uint8_t new_status);
     void set_stack_pointer(uint8_t new_stack_pointer);
     void set_program_counter(uint16_t new_program_counter);
+
+    uint8_t get_status_flag(StatusFlag status_flag);
 
     uint8_t get_byte_from_memory(uint16_t index);
     uint16_t get_word_from_memory(uint16_t index);

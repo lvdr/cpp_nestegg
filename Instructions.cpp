@@ -27,7 +27,8 @@ void Instructions::execute_nop(ComputerState &computer_state)
 
 void Instructions::execute_add_with_carry_immediate(ComputerState &computer_state)
 {
-           
+    uint8_t byte = get_immediate_byte(computer_state);
+    set_accumulator(get_accumulator() + byte);
 }
 
 
@@ -47,7 +48,6 @@ uint16_t Instructions::get_immediate_word(ComputerState &computer_state)
 
     return word;
 }
-
 
 void Instructions::increment_program_counter(ComputerState &computer_state)
 {
