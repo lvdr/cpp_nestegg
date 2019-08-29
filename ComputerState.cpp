@@ -87,7 +87,7 @@ void ComputerState::set_status_flag(StatusFlag status_flag, bool new_flag)
 {
     uint8_t index = static_cast<uint8_t>(status_flag);
     status &= ~(1 << index);
-    status |= 1 << index;
+    status |= static_cast<uint8_t>(new_flag) << index;
 }
 
 uint8_t ComputerState::get_byte_from_memory(uint16_t index)
