@@ -23,6 +23,8 @@ private:
     uint16_t get_immediate_word(ComputerState &computer_state);
 
     void increment_program_counter(ComputerState &computer_state);
+
+    bool is_negative(uint8_t byte);
 };
 
 #endif // header guard for INSTRUCTIONS_H

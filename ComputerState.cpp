@@ -75,12 +75,19 @@ void ComputerState::set_program_counter(uint16_t new_program_counter)
 }
 
 
-uint8_t ComputerState::get_status_flag(StatusFlag status_flag)
+bool ComputerState::get_status_flag(StatusFlag status_flag)
 {
     uint8_t index = std::static_cast<uint8_t>(status_flag); 
     uint8_t flag = status >> index;
 
     return flag & 0x1;
+}
+
+void ComputerState::set_status_flag(StatusFlag status_flag, bool new_flag)
+{
+    uint8_t index = std::static_cast<uint8_t>(status_flag); 
+    status &= ~(1 << index);
+    status |= 1 << index;
 }
 
 uint8_t ComputerState::get_byte_from_memory(uint16_t index)
