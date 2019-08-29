@@ -40,7 +40,7 @@ public:
     void set_program_counter(uint16_t new_program_counter);
 
     bool get_status_flag(StatusFlag status_flag);
-    bool set_status_flag(StatusFlag status_flag, bool new_flag);
+    void set_status_flag(StatusFlag status_flag, bool new_flag);
 
     uint8_t get_byte_from_memory(uint16_t index);
     uint16_t get_word_from_memory(uint16_t index);

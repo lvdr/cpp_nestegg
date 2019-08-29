@@ -19,14 +19,14 @@ private:
     typedef void (*InstructionFunction)(ComputerState&);
     std::array<InstructionFunction, 256> instruction_array;
 
-    void add_with_carry(uint8_t byte);
+    static void add_with_carry(ComputerState &computer_state, uint8_t byte);
 
-    uint8_t get_immediate_byte(ComputerState &computer_state);
-    uint16_t get_immediate_word(ComputerState &computer_state);
+    static uint8_t get_immediate_byte(ComputerState &computer_state);
+    static uint16_t get_immediate_word(ComputerState &computer_state);
 
-    void increment_program_counter(ComputerState &computer_state);
+    static void increment_program_counter(ComputerState &computer_state);
 
-    bool is_negative(uint8_t byte);
+    static bool is_negative(uint8_t byte);
 };
 
 #endif // header guard for INSTRUCTIONS_H

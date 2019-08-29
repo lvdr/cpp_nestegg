@@ -28,20 +28,20 @@ void Instructions::execute_nop(ComputerState &computer_state)
 void Instructions::execute_add_with_carry_immediate(ComputerState &computer_state)
 {
     uint8_t byte = get_immediate_byte(computer_state);
-    add_with_carry(byte);
+    add_with_carry(computer_state, byte);
 }
 
-void Instructions::add_with_carry(uint8_t byte)
+void Instructions::add_with_carry(ComputerState &computer_state, uint8_t byte)
 {
     uint8_t carry = static_cast<uint8_t>(computer_state.get_status_flag(ComputerState::StatusFlag::CARRY));
     uint8_t accumulator = computer_state.get_accumulator();
 
     uint16_t sum = byte + carry + accumulator;
 
-    bool carry = sum & (1 << 8);
-    computer_state.set_status_flag(ComputerState::StatusFlag::CARRY, carry);
+    bool new_carry = sum & (1 << 8);
+    computer_state.set_status_flag(ComputerState::StatusFlag::CARRY, new_carry);
 
-    sum &= 0xFF; 
+    sum &= 0xFF;
 
     bool zero = sum == 0;
     computer_state.set_status_flag(ComputerState::StatusFlag::ZERO, zero);
@@ -49,13 +49,13 @@ void Instructions::add_with_carry(uint8_t byte)
     bool negative = is_negative(sum);
     computer_state.set_status_flag(ComputerState::StatusFlag::NEGATIVE, negative);
 
-    bool byte_positive = !is_negative(byte); 
-    bool accumulator_positive = !is_negative(accumulator); 
-    bool sum_positive = !is_negative(sum); 
+    bool byte_positive = !is_negative(byte);
+    bool accumulator_positive = !is_negative(accumulator);
+    bool sum_positive = !is_negative(sum);
     bool overflow = byte_positive == accumulator_positive && sum_positive != byte_positive;
     computer_state.set_status_flag(ComputerState::StatusFlag::OVERFLOW, overflow);
 
-    set_accumulator(sum);
+    computer_state.set_accumulator(sum);
 }
 
 uint8_t Instructions::get_immediate_byte(ComputerState &computer_state)
@@ -82,6 +82,6 @@ void Instructions::increment_program_counter(ComputerState &computer_state)
 
 bool Instructions::is_negative(uint8_t byte)
 {
-    return (sum & (1 << 7)) == 127;
+    return (byte & (1 << 7)) == 127;
 }
 
