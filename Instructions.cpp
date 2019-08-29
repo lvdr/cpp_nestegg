@@ -28,6 +28,11 @@ void Instructions::execute_nop(ComputerState &computer_state)
 void Instructions::execute_add_with_carry_immediate(ComputerState &computer_state)
 {
     uint8_t byte = get_immediate_byte(computer_state);
+    add_with_carry(byte);
+}
+
+void Instructions::add_with_carry(uint8_t byte)
+{
     uint8_t carry = static_cast<uint8_t>(computer_state.get_status_flag(ComputerState::StatusFlag::CARRY));
     uint8_t accumulator = computer_state.get_accumulator();
 
@@ -52,7 +57,6 @@ void Instructions::execute_add_with_carry_immediate(ComputerState &computer_stat
 
     set_accumulator(sum);
 }
-
 
 uint8_t Instructions::get_immediate_byte(ComputerState &computer_state)
 {
