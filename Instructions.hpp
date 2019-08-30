@@ -14,6 +14,7 @@ public:
 
     static void execute_nop(ComputerState &computer_state);
     static void execute_add_with_carry_immediate(ComputerState &computer_state);
+    static void execute_add_with_carry_zeropage(ComputerState &computer_state);
 
 private:
     typedef void (*InstructionFunction)(ComputerState&);

@@ -31,6 +31,14 @@ void Instructions::execute_add_with_carry_immediate(ComputerState &computer_stat
     add_with_carry(byte);
 }
 
+void Instructions::execute_add_with_carry_zeropage(ComputerState &computer_state)
+{
+    uint8_t index = get_immediate_byte();
+    uint8_t byte = computer_state.get_byte_from_memory(index);
+
+    add_with_carry(byte);
+}
+
 void Instructions::add_with_carry(uint8_t byte)
 {
     uint8_t carry = static_cast<uint8_t>(computer_state.get_status_flag(ComputerState::StatusFlag::CARRY));
