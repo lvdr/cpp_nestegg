@@ -19,6 +19,9 @@ public:
     static void execute_add_with_carry_immediate(ComputerState &computer_state);
     static void execute_add_with_carry_zeropage(ComputerState &computer_state);
     static void execute_add_with_carry_zeropage_x(ComputerState &computer_state);
+    static void execute_add_with_carry_absolute(ComputerState &computer_state);
+    static void execute_add_with_carry_absolute_x(ComputerState &computer_state);
+    static void execute_add_with_carry_absolute_y(ComputerState &computer_state);
 
 private:
     typedef void (*InstructionFunction)(ComputerState&);

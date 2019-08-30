@@ -56,6 +56,30 @@ void Instructions::execute_add_with_carry_zeropage_x(ComputerState &computer_sta
     add_with_carry(computer_state, byte);
 }
 
+void Instructions::execute_add_with_carry_absolute(ComputerState &computer_state)
+{
+    uint16_t address = get_immediate_word(computer_state);
+    uint8_t byte = computer_state.get_byte_from_memory(address);
+
+    add_with_carry(computer_state, byte);
+}
+
+void Instructions::execute_add_with_carry_absolute_x(ComputerState &computer_state)
+{
+    uint16_t address = get_immediate_word(computer_state) + computer_state.get_x();
+    uint8_t byte = computer_state.get_byte_from_memory(address);
+
+    add_with_carry(computer_state, byte);
+}
+
+void Instructions::execute_add_with_carry_absolute_y(ComputerState &computer_state)
+{
+    uint16_t address = get_immediate_word(computer_state) + computer_state.get_y();
+    uint8_t byte = computer_state.get_byte_from_memory(address);
+
+    add_with_carry(computer_state, byte);
+}
+
 void Instructions::add_with_carry(ComputerState &computer_state, uint8_t byte)
 {
     uint8_t carry = static_cast<uint8_t>(computer_state.get_status_flag(ComputerState::StatusFlag::CARRY));
