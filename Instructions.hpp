@@ -25,6 +25,15 @@ public:
     static void execute_add_with_carry_indirect_x(ComputerState &computer_state);
     static void execute_add_with_carry_indirect_y(ComputerState &computer_state);
 
+    static void execute_branch_on_carry_set(ComputerState& computer_state);
+    static void execute_branch_on_carry_clear(ComputerState& computer_state);
+    static void execute_branch_on_equal(ComputerState& computer_state);
+    static void execute_branch_on_not_equal(ComputerState& computer_state);
+    static void execute_branch_on_overflow_set(ComputerState& computer_state);
+    static void execute_branch_on_overflow_clear(ComputerState& computer_state);
+    static void execute_branch_on_plus(ComputerState& computer_state);
+    static void execute_branch_on_minus(ComputerState& computer_state);
+
 private:
     typedef void (*InstructionFunction)(ComputerState&);
     std::array<InstructionFunction, 256> instruction_array;

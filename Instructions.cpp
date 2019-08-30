@@ -4,14 +4,28 @@
 
 Instructions::Instructions()
 {
-    // initialize array
     for (size_t opcode = 0; opcode < 256; opcode++) {
         instruction_array[opcode] = &fail_unimplemented;
     }
 
-    // Add instructions here, by default instructions do nothing
-    instruction_array[0x69] = &execute_add_with_carry_immediate;
+    instruction_array[0x61] = &execute_add_with_carry_indirect_x;
     instruction_array[0x65] = &execute_add_with_carry_zeropage;
+    instruction_array[0x69] = &execute_add_with_carry_immediate;
+    instruction_array[0x6d] = &execute_add_with_carry_absolute;
+    instruction_array[0x71] = &execute_add_with_carry_indirect_y;
+    instruction_array[0x75] = &execute_add_with_carry_zeropage_x;
+    instruction_array[0x79] = &execute_add_with_carry_absolute_y;
+    instruction_array[0x7d] = &execute_add_with_carry_absolute_x;
+
+    instruction_array[0x10] = &execute_branch_on_plus;
+    instruction_array[0x30] = &execute_branch_on_minus;
+    instruction_array[0x50] = &execute_branch_on_overflow_clear;
+    instruction_array[0x70] = &execute_branch_on_overflow_set;
+    instruction_array[0x90] = &execute_branch_on_carry_clear;
+    instruction_array[0xb0] = &execute_branch_on_carry_set;
+    instruction_array[0xd0] = &execute_branch_on_not_equal;
+    instruction_array[0xf0] = &execute_branch_on_equal;
+
     instruction_array[0xEA] = &execute_nop;
 }
 
@@ -98,6 +112,9 @@ void Instructions::execute_add_with_carry_indirect_y(ComputerState &computer_sta
     add_with_carry();
 }
 
+
+
+
 void Instructions::add_with_carry(ComputerState &computer_state, uint8_t byte)
 {
     uint8_t carry = static_cast<uint8_t>(computer_state.get_status_flag(ComputerState::StatusFlag::CARRY));
@@ -124,6 +141,81 @@ void Instructions::add_with_carry(ComputerState &computer_state, uint8_t byte)
 
     computer_state.set_accumulator(sum);
 }
+
+void execute_branch_on_carry_set(ComputerState &computer_state)
+{
+    uint8_t offset = get_immediate_byte(computer_state);
+    if (computer_state.get_status_flag(ComputerState::StatusFlag::CARRY)) {
+        uint16_t new_program_counter = computer_state.get_program_counter();
+        new_program_counter += static_cast<int8_t>(offset);
+    }
+}
+
+void execute_branch_on_carry_clear(ComputerState &computer_state)
+{
+    uint8_t offset = get_immediate_byte(computer_state);
+    if (!computer_state.get_status_flag(ComputerState::StatusFlag::CARRY)) {
+        uint16_t new_program_counter = computer_state.get_program_counter();
+        new_program_counter += static_cast<int8_t>(offset);
+    }
+}
+
+void execute_branch_on_equal(ComputerState &computer_state)
+{
+    uint8_t offset = get_immediate_byte(computer_state);
+    if (computer_state.get_status_flag(ComputerState::StatusFlag::ZERO)) {
+        uint16_t new_program_counter = computer_state.get_program_counter();
+        new_program_counter += static_cast<int8_t>(offset);
+    }
+}
+
+void execute_branch_on_not_equal(ComputerState &computer_state)
+{
+    uint8_t offset = get_immediate_byte(computer_state);
+    if (!computer_state.get_status_flag(ComputerState::StatusFlag::ZERO)) {
+        uint16_t new_program_counter = computer_state.get_program_counter();
+        new_program_counter += static_cast<int8_t>(offset);
+    }
+}
+
+
+void execute_branch_on_overflow_set(ComputerState &computer_state)
+{
+    uint8_t offset = get_immediate_byte(computer_state);
+    if (computer_state.get_status_flag(ComputerState::StatusFlag::OVERFLOW)) {
+        uint16_t new_program_counter = computer_state.get_program_counter();
+        new_program_counter += static_cast<int8_t>(offset);
+    }
+}
+
+void execute_branch_on_overflow_clear(ComputerState &computer_state)
+{
+    uint8_t offset = get_immediate_byte(computer_state);
+    if (!computer_state.get_status_flag(ComputerState::StatusFlag::OVERFLOW)) {
+        uint16_t new_program_counter = computer_state.get_program_counter();
+        new_program_counter += static_cast<int8_t>(offset);
+    }
+}
+
+
+void execute_branch_on_plus(ComputerState &computer_state)
+{
+    uint8_t offset = get_immediate_byte(computer_state);
+    if (!computer_state.get_status_flag(ComputerState::StatusFlag::NEGATIVE)) {
+        uint16_t new_program_counter = computer_state.get_program_counter();
+        new_program_counter += static_cast<int8_t>(offset);
+    }
+}
+
+void execute_branch_on_minus(ComputerState &computer_state)
+{
+    uint8_t offset = get_immediate_byte(computer_state);
+    if (computer_state.get_status_flag(ComputerState::StatusFlag::NEGATIVE)) {
+        uint16_t new_program_counter = computer_state.get_program_counter();
+        new_program_counter += static_cast<int8_t>(offset);
+    }
+}
+
 
 uint8_t Instructions::get_immediate_byte(ComputerState &computer_state)
 {
