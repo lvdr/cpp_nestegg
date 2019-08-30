@@ -1,3 +1,4 @@
+#include <cstdio>
 #include "Instructions.hpp"
 #include "ComputerState.hpp"
 
@@ -5,11 +6,13 @@ Instructions::Instructions()
 {
     // initialize array
     for (size_t opcode = 0; opcode < 256; opcode++) {
-        instruction_array[opcode] = &execute_nop;
+        instruction_array[opcode] = &fail_unimplemented;
     }
 
     // Add instructions here, by default instructions do nothing
     instruction_array[0x69] = &execute_add_with_carry_immediate;
+    instruction_array[0x65] = &execute_add_with_carry_zeropage;
+    instruction_array[0xEA] = &execute_nop;
 }
 
 void Instructions::execute(uint8_t opcode, ComputerState &computer_state)
@@ -24,6 +27,12 @@ void Instructions::execute_nop(ComputerState &computer_state)
     return;
 }
 
+void Instructions::fail_unimplemented(ComputerState &computer_state)
+{
+    uint8_t opcode = computer_state.get_byte_from_memory(computer_state.get_program_counter() - 1);
+    printf("Operation with opcode 0x%x not implemented\n", opcode);
+    return;
+}
 
 void Instructions::execute_add_with_carry_immediate(ComputerState &computer_state)
 {
@@ -33,10 +42,10 @@ void Instructions::execute_add_with_carry_immediate(ComputerState &computer_stat
 
 void Instructions::execute_add_with_carry_zeropage(ComputerState &computer_state)
 {
-    uint8_t index = get_immediate_byte();
+    uint8_t index = get_immediate_byte(computer_state);
     uint8_t byte = computer_state.get_byte_from_memory(index);
 
-    add_with_carry(byte);
+    add_with_carry(computer_state, byte);
 }
 
 void Instructions::add_with_carry(ComputerState &computer_state, uint8_t byte)
