@@ -80,6 +80,24 @@ void Instructions::execute_add_with_carry_absolute_y(ComputerState &computer_sta
     add_with_carry(computer_state, byte);
 }
 
+void Instructions::execute_add_with_carry_indirect_x(ComputerState &computer_state)
+{
+    uint8_t address_of_pointer = get_immediate_word(computer_state) + get_x();
+    uint8_t address = get_word_from_memory(address_of_pointer);
+    uint8_t byte = get_byte_from_memory(address);
+
+    add_with_carry();
+}
+
+void Instructions::execute_add_with_carry_indirect_y(ComputerState &computer_state)
+{
+    uint8_t address_of_pointer = get_immediate_word(computer_state);
+    uint8_t address = get_word_from_memory(address_of_pointer) + get_y();
+    uint8_t byte = get_byte_from_memory(address);
+
+    add_with_carry();
+}
+
 void Instructions::add_with_carry(ComputerState &computer_state, uint8_t byte)
 {
     uint8_t carry = static_cast<uint8_t>(computer_state.get_status_flag(ComputerState::StatusFlag::CARRY));
