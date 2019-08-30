@@ -34,7 +34,6 @@ TEST_CASE( "ADC immediate", "[base]" ) {
 
 TEST_CASE( "ADC zeropage", "[base]" ) {
     ComputerState comp(1024);
-    // Nice
     std::vector<uint8_t> initial_memory({0x65, 8, 0x65, 10,
                                          0x65, 9, 0x65, 9,
                                          0x30, 0xff, 0x70});
