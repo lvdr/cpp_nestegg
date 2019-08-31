@@ -125,42 +125,50 @@ void Instructions::add_with_carry(ComputerState &computer_state, uint8_t operand
 
 void Instructions::execute_compare_with_accumulator_immediate(ComputerState &computer_state)
 {
-
+    uint8_t operand = get_immediate_byte(computer_state);
+    compare_with_accumulator(compare_with_accumulator, operand);
 }
 
 void Instructions::execute_compare_with_accumulator_zeropage(ComputerState &computer_state)
 {
-
+    uint8_t operand = get_operand_zeropage(computer_state);
+    compare_with_accumulator(compare_with_accumulator, operand);
 }
 
 void Instructions::execute_compare_with_accumulator_zeropage_x(ComputerState &computer_state)
 {
-
+    uint8_t operand = get_operand_zeropage_x_indexed(computer_state);
+    compare_with_accumulator(compare_with_accumulator, operand);
 }
 
 void Instructions::execute_compare_with_accumulator_absolute(ComputerState &computer_state)
 {
-
+    uint8_t operand = get_operand_absolute(computer_state);
+    compare_with_accumulator(compare_with_accumulator, operand);
 }
 
 void Instructions::execute_compare_with_accumulator_absolute_x(ComputerState &computer_state)
 {
-
+    uint8_t operand = get_operand_absolute_x_indexed(computer_state);
+    compare_with_accumulator(compare_with_accumulator, operand);
 }
 
 void Instructions::execute_compare_with_accumulator_absolute_y(ComputerState &computer_state)
 {
-
+    uint8_t operand = get_operand_absolute_y_indexed(computer_state);
+    compare_with_accumulator(compare_with_accumulator, operand);
 }
 
 void Instructions::execute_compare_with_accumulator_indirect_x(ComputerState &computer_state)
 {
-
+    uint8_t operand = get_operand_indirect_x_indexed(computer_state);
+    compare_with_accumulator(compare_with_accumulator, operand);
 }
 
 void Instructions::execute_compare_with_accumulator_indirect_y(ComputerState &computer_state)
 {
-
+    uint8_t operand = get_operand_indirect_y_indexed(computer_state);
+    compare_with_accumulator(compare_with_accumulator, operand);
 }
 
 void Instructions::compare_with_accumulator(ComputerState &computer_state, uint8_t operand)
