@@ -50,58 +50,58 @@ void Instructions::fail_unimplemented(ComputerState &computer_state)
 
 void Instructions::execute_add_with_carry_immediate(ComputerState &computer_state)
 {
-    uint8_t byte = get_immediate_byte(computer_state);
-    add_with_carry(computer_state, byte);
+    uint8_t operand = get_immediate_byte(computer_state);
+    add_with_carry(computer_state, operand);
 }
 
 void Instructions::execute_add_with_carry_zeropage(ComputerState &computer_state)
 {
-    uint8_t byte = get_operand_zeropage(computer_state);
-    add_with_carry(computer_state, byte);
+    uint8_t operand = get_operand_zeropage(computer_state);
+    add_with_carry(computer_state, operand);
 }
 
 void Instructions::execute_add_with_carry_zeropage_x(ComputerState &computer_state)
 {
-    uint8_t byte = get_operand_zeropage_x_indexed(computer_state);
-    add_with_carry(computer_state, byte);
+    uint8_t operand = get_operand_zeropage_x_indexed(computer_state);
+    add_with_carry(computer_state, operand);
 }
 
 void Instructions::execute_add_with_carry_absolute(ComputerState &computer_state)
 {
-    uint8_t byte = get_operand_absolute(computer_state);
-    add_with_carry(computer_state, byte);
+    uint8_t operand = get_operand_absolute(computer_state);
+    add_with_carry(computer_state, operand);
 }
 
 void Instructions::execute_add_with_carry_absolute_x(ComputerState &computer_state)
 {
-    uint8_t byte = get_operand_absolute_x_indexed(computer_state);
-    add_with_carry(computer_state, byte);
+    uint8_t operand = get_operand_absolute_x_indexed(computer_state);
+    add_with_carry(computer_state, operand);
 }
 
 void Instructions::execute_add_with_carry_absolute_y(ComputerState &computer_state)
 {
-    uint8_t byte = get_operand_absolute_y_indexed(computer_state);
-    add_with_carry(computer_state, byte);
+    uint8_t operand = get_operand_absolute_y_indexed(computer_state);
+    add_with_carry(computer_state, operand);
 }
 
 void Instructions::execute_add_with_carry_indirect_x(ComputerState &computer_state)
 {
-    uint8_t byte = get_operand_x_indexed_indirect(computer_state);
-    add_with_carry(computer_state, byte);
+    uint8_t operand = get_operand_x_indexed_indirect(computer_state);
+    add_with_carry(computer_state, operand);
 }
 
 void Instructions::execute_add_with_carry_indirect_y(ComputerState &computer_state)
 {
-    uint8_t byte = get_operand_indirect_y_indexed(computer_state);
-    add_with_carry(computer_state, byte);
+    uint8_t operand = get_operand_indirect_y_indexed(computer_state);
+    add_with_carry(computer_state, operand);
 }
 
-void Instructions::add_with_carry(ComputerState &computer_state, uint8_t byte)
+void Instructions::add_with_carry(ComputerState &computer_state, uint8_t operand)
 {
     uint8_t carry = static_cast<uint8_t>(computer_state.get_status_flag(ComputerState::StatusFlag::CARRY));
     uint8_t accumulator = computer_state.get_accumulator();
 
-    uint16_t sum = byte + carry + accumulator;
+    uint16_t sum = operand + carry + accumulator;
 
     bool new_carry = sum & (1 << 8);
     computer_state.set_status_flag(ComputerState::StatusFlag::CARRY, new_carry);
@@ -114,7 +114,7 @@ void Instructions::add_with_carry(ComputerState &computer_state, uint8_t byte)
     bool negative = is_negative(sum);
     computer_state.set_status_flag(ComputerState::StatusFlag::NEGATIVE, negative);
 
-    bool byte_positive = !is_negative(byte);
+    bool byte_positive = !is_negative(operand);
     bool accumulator_positive = !is_negative(accumulator);
     bool sum_positive = !is_negative(sum);
     bool overflow = byte_positive == accumulator_positive && sum_positive != byte_positive;

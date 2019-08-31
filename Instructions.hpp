@@ -38,7 +38,7 @@ private:
     typedef void (*InstructionFunction)(ComputerState&);
     std::array<InstructionFunction, 256> instruction_array;
 
-    static void add_with_carry(ComputerState &computer_state, uint8_t byte);
+    static void add_with_carry(ComputerState &computer_state, uint8_t operand);
 
     static uint8_t get_immediate_byte(ComputerState &computer_state);
     static uint16_t get_immediate_word(ComputerState &computer_state);
