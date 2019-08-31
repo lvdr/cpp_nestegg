@@ -96,20 +96,20 @@ void Instructions::execute_add_with_carry_absolute_y(ComputerState &computer_sta
 
 void Instructions::execute_add_with_carry_indirect_x(ComputerState &computer_state)
 {
-    uint8_t address_of_pointer = get_immediate_word(computer_state) + get_x();
-    uint8_t address = get_word_from_memory(address_of_pointer);
-    uint8_t byte = get_byte_from_memory(address);
+    uint8_t address_of_pointer = get_immediate_word(computer_state) + computer_state.get_x();
+    uint8_t address = computer_state.get_word_from_memory(address_of_pointer);
+    uint8_t byte = computer_state.get_byte_from_memory(address);
 
-    add_with_carry();
+    add_with_carry(computer_state, byte);
 }
 
 void Instructions::execute_add_with_carry_indirect_y(ComputerState &computer_state)
 {
     uint8_t address_of_pointer = get_immediate_word(computer_state);
-    uint8_t address = get_word_from_memory(address_of_pointer) + get_y();
-    uint8_t byte = get_byte_from_memory(address);
+    uint8_t address = computer_state.get_word_from_memory(address_of_pointer) + computer_state.get_y();
+    uint8_t byte = computer_state.get_byte_from_memory(address);
 
-    add_with_carry();
+    add_with_carry(computer_state, byte);
 }
 
 
@@ -142,7 +142,7 @@ void Instructions::add_with_carry(ComputerState &computer_state, uint8_t byte)
     computer_state.set_accumulator(sum);
 }
 
-void execute_branch_on_carry_set(ComputerState &computer_state)
+void Instructions::execute_branch_on_carry_set(ComputerState &computer_state)
 {
     uint8_t offset = get_immediate_byte(computer_state);
     if (computer_state.get_status_flag(ComputerState::StatusFlag::CARRY)) {
@@ -151,7 +151,7 @@ void execute_branch_on_carry_set(ComputerState &computer_state)
     }
 }
 
-void execute_branch_on_carry_clear(ComputerState &computer_state)
+void Instructions::execute_branch_on_carry_clear(ComputerState &computer_state)
 {
     uint8_t offset = get_immediate_byte(computer_state);
     if (!computer_state.get_status_flag(ComputerState::StatusFlag::CARRY)) {
@@ -160,7 +160,7 @@ void execute_branch_on_carry_clear(ComputerState &computer_state)
     }
 }
 
-void execute_branch_on_equal(ComputerState &computer_state)
+void Instructions::execute_branch_on_equal(ComputerState &computer_state)
 {
     uint8_t offset = get_immediate_byte(computer_state);
     if (computer_state.get_status_flag(ComputerState::StatusFlag::ZERO)) {
@@ -169,7 +169,7 @@ void execute_branch_on_equal(ComputerState &computer_state)
     }
 }
 
-void execute_branch_on_not_equal(ComputerState &computer_state)
+void Instructions::execute_branch_on_not_equal(ComputerState &computer_state)
 {
     uint8_t offset = get_immediate_byte(computer_state);
     if (!computer_state.get_status_flag(ComputerState::StatusFlag::ZERO)) {
@@ -179,7 +179,7 @@ void execute_branch_on_not_equal(ComputerState &computer_state)
 }
 
 
-void execute_branch_on_overflow_set(ComputerState &computer_state)
+void Instructions::execute_branch_on_overflow_set(ComputerState &computer_state)
 {
     uint8_t offset = get_immediate_byte(computer_state);
     if (computer_state.get_status_flag(ComputerState::StatusFlag::OVERFLOW)) {
@@ -188,7 +188,7 @@ void execute_branch_on_overflow_set(ComputerState &computer_state)
     }
 }
 
-void execute_branch_on_overflow_clear(ComputerState &computer_state)
+void Instructions::execute_branch_on_overflow_clear(ComputerState &computer_state)
 {
     uint8_t offset = get_immediate_byte(computer_state);
     if (!computer_state.get_status_flag(ComputerState::StatusFlag::OVERFLOW)) {
@@ -198,7 +198,7 @@ void execute_branch_on_overflow_clear(ComputerState &computer_state)
 }
 
 
-void execute_branch_on_plus(ComputerState &computer_state)
+void Instructions::execute_branch_on_plus(ComputerState &computer_state)
 {
     uint8_t offset = get_immediate_byte(computer_state);
     if (!computer_state.get_status_flag(ComputerState::StatusFlag::NEGATIVE)) {
@@ -207,7 +207,7 @@ void execute_branch_on_plus(ComputerState &computer_state)
     }
 }
 
-void execute_branch_on_minus(ComputerState &computer_state)
+void Instructions::execute_branch_on_minus(ComputerState &computer_state)
 {
     uint8_t offset = get_immediate_byte(computer_state);
     if (computer_state.get_status_flag(ComputerState::StatusFlag::NEGATIVE)) {
