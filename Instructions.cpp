@@ -26,6 +26,15 @@ Instructions::Instructions()
     instruction_array[0xd0] = &execute_branch_on_not_equal;
     instruction_array[0xf0] = &execute_branch_on_equal;
 
+    instruction_array[0xc1] = &execute_compare_with_accumulator_indirect_x;
+    instruction_array[0xc5] = &execute_compare_with_accumulator_zeropage;
+    instruction_array[0xc9] = &execute_compare_with_accumulator_immediate;
+    instruction_array[0xcd] = &execute_compare_with_accumulator_absolute;
+    instruction_array[0xd1] = &execute_compare_with_accumulator_indirect_y;
+    instruction_array[0xd5] = &execute_compare_with_accumulator_zeropage_x;
+    instruction_array[0xd9] = &execute_compare_with_accumulator_absolute_y;
+    instruction_array[0xdd] = &execute_compare_with_accumulator_absolute_x;
+
     instruction_array[0xEA] = &execute_nop;
 }
 
