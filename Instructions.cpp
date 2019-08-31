@@ -123,6 +123,69 @@ void Instructions::add_with_carry(ComputerState &computer_state, uint8_t operand
     computer_state.set_accumulator(sum);
 }
 
+void Instructions::execute_compare_with_accumulator_immediate(ComputerState &computer_state)
+{
+
+}
+
+void Instructions::execute_compare_with_accumulator_zeropage(ComputerState &computer_state)
+{
+
+}
+
+void Instructions::execute_compare_with_accumulator_zeropage_x(ComputerState &computer_state)
+{
+
+}
+
+void Instructions::execute_compare_with_accumulator_absolute(ComputerState &computer_state)
+{
+
+}
+
+void Instructions::execute_compare_with_accumulator_absolute_x(ComputerState &computer_state)
+{
+
+}
+
+void Instructions::execute_compare_with_accumulator_absolute_y(ComputerState &computer_state)
+{
+
+}
+
+void Instructions::execute_compare_with_accumulator_indirect_x(ComputerState &computer_state)
+{
+
+}
+
+void Instructions::execute_compare_with_accumulator_indirect_y(ComputerState &computer_state)
+{
+
+}
+
+void Instructions::compare_with_accumulator(ComputerState &computer_state, uint8_t operand)
+{
+    uint8_t accumulator = computer_state.get_accumulator();
+
+    if (accumulator >= operand) {
+        computer_state.set_status_flag(ComputerState::StatusFlag::CARRY, true);
+    } else {
+        computer_state.set_status_flag(ComputerState::StatusFlag::CARRY, false);
+    }
+
+    if (accumulator == operand) {
+        computer_state.set_status_flag(ComputerState::StatusFlag::ZERO, true);
+    } else {
+        computer_state.set_status_flag(ComputerState::StatusFlag::ZERO, false);
+    }
+
+    if (accumulator >= $80) {
+        computer_state.set_status_flag(ComputerState::StatusFlag::NEGATIVE, true);
+    } else {
+        computer_state.set_status_flag(ComputerState::StatusFlag::NEGATIVE, false);
+    }
+}
+
 void Instructions::execute_branch_on_carry_set(ComputerState &computer_state)
 {
     uint8_t offset = get_immediate_byte(computer_state);
