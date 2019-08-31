@@ -180,6 +180,14 @@ void Instructions::execute_compare_with_accumulator_indirect_y(ComputerState &co
     compare_with_accumulator(compare_with_accumulator, operand);
 }
 
+void Instructions::execute_compare_x_register_immediate(computerState &computer_state);
+void Instructions::execute_compare_x_register_zeropage(computerState &computer_state);
+void Instructions::execute_compare_x_register_absolute(computerState &computer_state);
+void Instructions::
+void Instructions::execute_compare_y_register_immediate(computerState &computer_state);
+void Instructions::execute_compare_y_register_zeropage(ComputerState &computer_state);
+void Instructions::execute_compare_y_register_absolute(ComputerState &computer_state);
+
 void Instructions::compare_with_accumulator(ComputerState &computer_state, uint8_t operand)
 {
     uint8_t accumulator = computer_state.get_accumulator();

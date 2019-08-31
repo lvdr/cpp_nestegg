@@ -34,6 +34,14 @@ public:
     static void execute_compare_with_accumulator_indirect_x(ComputerState &computer_state);
     static void execute_compare_with_accumulator_indirect_y(ComputerState &computer_state);
 
+    static void execute_compare_x_register_immediate(computerState &computer_state);
+    static void execute_compare_x_register_zeropage(computerState &computer_state);
+    static void execute_compare_x_register_absolute(computerState &computer_state);
+
+    static void execute_compare_y_register_immediate(computerState &computer_state);
+    static void execute_compare_y_register_zeropage(ComputerState &computer_state);
+    static void execute_compare_y_register_absolute(ComputerState &computer_state);
+
     static void execute_branch_on_carry_set(ComputerState& computer_state);
     static void execute_branch_on_carry_clear(ComputerState& computer_state);
     static void execute_branch_on_equal(ComputerState& computer_state);
