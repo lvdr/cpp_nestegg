@@ -43,6 +43,16 @@ private:
     static uint8_t get_immediate_byte(ComputerState &computer_state);
     static uint16_t get_immediate_word(ComputerState &computer_state);
 
+    static uint8_t get_operand_absolute(ComputerState &computer_state);
+    static uint8_t get_operand_absolute_x_indexed(ComputerState &computer_state);
+    static uint8_t get_operand_absolute_y_indexed(ComputerState &computer_state);
+    static uint8_t get_operand_indirect(ComputerState &computer_state);
+    static uint8_t get_operand_x_indexed_indirect(ComputerState &computer_state);
+    static uint8_t get_operand_indirect_y_indexed(ComputerState &computer_state);
+    static uint8_t get_operand_zeropage(ComputerState &computer_state);
+    static uint8_t get_operand_zeropage_x_indexed(ComputerState &computer_state);
+    static uint8_t get_operand_zeropage_y_indexed(ComputerState &computer_state);
+
     static void increment_program_counter(ComputerState &computer_state);
 
     static bool is_negative(uint8_t byte);

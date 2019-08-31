@@ -56,64 +56,45 @@ void Instructions::execute_add_with_carry_immediate(ComputerState &computer_stat
 
 void Instructions::execute_add_with_carry_zeropage(ComputerState &computer_state)
 {
-    uint8_t index = get_immediate_byte(computer_state);
-    uint8_t byte = computer_state.get_byte_from_memory(index);
-
+    uint8_t byte = get_operand_zeropage(computer_state);
     add_with_carry(computer_state, byte);
 }
 
 void Instructions::execute_add_with_carry_zeropage_x(ComputerState &computer_state)
 {
-    uint8_t address = get_immediate_byte(computer_state) + computer_state.get_x();
-    uint8_t byte = computer_state.get_byte_from_memory(address);
-
+    uint8_t byte = get_operand_zeropage_x_indexed(computer_state);
     add_with_carry(computer_state, byte);
 }
 
 void Instructions::execute_add_with_carry_absolute(ComputerState &computer_state)
 {
-    uint16_t address = get_immediate_word(computer_state);
-    uint8_t byte = computer_state.get_byte_from_memory(address);
-
+    uint8_t byte = get_operand_absolute(computer_state);
     add_with_carry(computer_state, byte);
 }
 
 void Instructions::execute_add_with_carry_absolute_x(ComputerState &computer_state)
 {
-    uint16_t address = get_immediate_word(computer_state) + computer_state.get_x();
-    uint8_t byte = computer_state.get_byte_from_memory(address);
-
+    uint8_t byte = get_operand_absolute_x_indexed(computer_state);
     add_with_carry(computer_state, byte);
 }
 
 void Instructions::execute_add_with_carry_absolute_y(ComputerState &computer_state)
 {
-    uint16_t address = get_immediate_word(computer_state) + computer_state.get_y();
-    uint8_t byte = computer_state.get_byte_from_memory(address);
-
+    uint8_t byte = get_operand_absolute_y_indexed(computer_state);
     add_with_carry(computer_state, byte);
 }
 
 void Instructions::execute_add_with_carry_indirect_x(ComputerState &computer_state)
 {
-    uint8_t address_of_pointer = get_immediate_word(computer_state) + computer_state.get_x();
-    uint8_t address = computer_state.get_word_from_memory(address_of_pointer);
-    uint8_t byte = computer_state.get_byte_from_memory(address);
-
+    uint8_t byte = get_operand_x_indexed_indirect(computer_state);
     add_with_carry(computer_state, byte);
 }
 
 void Instructions::execute_add_with_carry_indirect_y(ComputerState &computer_state)
 {
-    uint8_t address_of_pointer = get_immediate_word(computer_state);
-    uint8_t address = computer_state.get_word_from_memory(address_of_pointer) + computer_state.get_y();
-    uint8_t byte = computer_state.get_byte_from_memory(address);
-
+    uint8_t byte = get_operand_indirect_y_indexed(computer_state);
     add_with_carry(computer_state, byte);
 }
-
-
-
 
 void Instructions::add_with_carry(ComputerState &computer_state, uint8_t byte)
 {
@@ -233,6 +214,64 @@ uint16_t Instructions::get_immediate_word(ComputerState &computer_state)
 
     return word;
 }
+
+uint8_t Instructions::get_operand_absolute(ComputerState &computer_state)
+{
+    uint16_t address = get_immediate_word(computer_state);
+    return computer_state.get_byte_from_memory(address);
+}
+
+uint8_t Instructions::get_operand_absolute_x_indexed(ComputerState &computer_state)
+{
+    uint16_t address = get_immediate_word(computer_state) + computer_state.get_x();
+    return computer_state.get_byte_from_memory(address);
+}
+
+uint8_t Instructions::get_operand_absolute_y_indexed(ComputerState &computer_state)
+{
+    uint16_t address = get_immediate_word(computer_state) + computer_state.get_y();
+    return computer_state.get_byte_from_memory(address);
+}
+
+uint8_t Instructions::get_operand_indirect(ComputerState &computer_state)
+{
+    uint8_t address_of_pointer = get_immediate_word(computer_state);
+    uint8_t address = computer_state.get_word_from_memory(address_of_pointer);
+    return computer_state.get_byte_from_memory(address);
+}
+
+uint8_t Instructions::get_operand_x_indexed_indirect(ComputerState &computer_state)
+{
+    uint8_t address_of_pointer = get_immediate_word(computer_state) + computer_state.get_x();
+    uint8_t address = computer_state.get_word_from_memory(address_of_pointer);
+    return computer_state.get_byte_from_memory(address);
+}
+
+uint8_t Instructions::get_operand_indirect_y_indexed(ComputerState &computer_state)
+{
+    uint8_t address_of_pointer = get_immediate_word(computer_state);
+    uint8_t address = computer_state.get_word_from_memory(address_of_pointer) + computer_state.get_y();
+    return computer_state.get_byte_from_memory(address);
+}
+
+uint8_t Instructions::get_operand_zeropage(ComputerState &computer_state)
+{
+    uint8_t index = get_immediate_byte(computer_state);
+    return computer_state.get_byte_from_memory(index);
+}
+
+uint8_t Instructions::get_operand_zeropage_x_indexed(ComputerState &computer_state)
+{
+    uint8_t address = get_immediate_byte(computer_state) + computer_state.get_x();
+    return computer_state.get_byte_from_memory(address);
+}
+
+uint8_t Instructions::get_operand_zeropage_y_indexed(ComputerState &computer_state)
+{
+    uint8_t address = get_immediate_byte(computer_state) + computer_state.get_y();
+    return computer_state.get_byte_from_memory(address);
+}
+
 
 void Instructions::increment_program_counter(ComputerState &computer_state)
 {
