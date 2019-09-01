@@ -8,14 +8,14 @@ Instructions::Instructions()
         instruction_array[opcode] = &fail_unimplemented;
     }
 
-    instruction_array[0x61] = &execute_add_with_carry_indirect_x;
-    instruction_array[0x65] = &execute_add_with_carry_zeropage;
-    instruction_array[0x69] = &execute_add_with_carry_immediate;
-    instruction_array[0x6d] = &execute_add_with_carry_absolute;
-    instruction_array[0x71] = &execute_add_with_carry_indirect_y;
-    instruction_array[0x75] = &execute_add_with_carry_zeropage_x;
-    instruction_array[0x79] = &execute_add_with_carry_absolute_y;
-    instruction_array[0x7d] = &execute_add_with_carry_absolute_x;
+    instruction_array[0x61] = std::make_pair(&get_operand_indirect_x, &execute_add_with_carry);
+    instruction_array[0x65] = std::make_pair(&get_operand_zeropage, &execute_add_with_carry);
+    instruction_array[0x69] = std::make_pair(&get_operand_immediate, &execute_add_with_carry);
+    instruction_array[0x6d] = std::make_pair(&get_operand_absolute, &execute_add_with_carry);
+    instruction_array[0x71] = std::make_pair(&get_operand_indirect_y, &execute_add_with_carry);
+    instruction_array[0x75] = std::make_pair(&get_operand_zeropage_x, &execute_add_with_carry);
+    instruction_array[0x79] = std::make_pair(&get_operand_absolute_y, &execute_add_with_carry);
+    instruction_array[0x7d] = std::make_pair(&get_operand_absolute_x, &execute_add_with_carry);
 
     instruction_array[0x10] = &execute_branch_on_plus;
     instruction_array[0x30] = &execute_branch_on_minus;
@@ -26,22 +26,22 @@ Instructions::Instructions()
     instruction_array[0xd0] = &execute_branch_on_not_equal;
     instruction_array[0xf0] = &execute_branch_on_equal;
 
-    instruction_array[0xc1] = &execute_compare_with_accumulator_indirect_x;
-    instruction_array[0xc5] = &execute_compare_with_accumulator_zeropage;
-    instruction_array[0xc9] = &execute_compare_with_accumulator_immediate;
-    instruction_array[0xcd] = &execute_compare_with_accumulator_absolute;
-    instruction_array[0xd1] = &execute_compare_with_accumulator_indirect_y;
-    instruction_array[0xd5] = &execute_compare_with_accumulator_zeropage_x;
-    instruction_array[0xd9] = &execute_compare_with_accumulator_absolute_y;
-    instruction_array[0xdd] = &execute_compare_with_accumulator_absolute_x;
+    instruction_array[0xc1] = std::make_pair(&get_operand_indirect_x, &execute_compare_with_accumulator);
+    instruction_array[0xc5] = std::make_pair(&get_operand_zeropage, &execute_compare_with_accumulator);
+    instruction_array[0xc9] = std::make_pair(&get_operand_immediate, &execute_compare_with_accumulator);
+    instruction_array[0xcd] = std::make_pair(&get_operand_absolute, &execute_compare_with_accumulator);
+    instruction_array[0xd1] = std::make_pair(&get_operand_indirect_y, &execute_compare_with_accumulator);
+    instruction_array[0xd5] = std::make_pair(&get_operand_zeropage_x, &execute_compare_with_accumulator);
+    instruction_array[0xd9] = std::make_pair(&get_operand_absolute_y, &execute_compare_with_accumulator);
+    instruction_array[0xdd] = std::make_pair(&get_operand_absolute_x, &execute_compare_with_accumulator);
 
-    instruction_array[0xE0] = &execute_compare_x_register_immediate;
-    instruction_array[0xE4] = &execute_compare_x_register_zeropage;
-    instruction_array[0xEC] = &execute_compare_x_register_absolute;
+    instruction_array[0xE0] = std::make_pair(&get_operand_immediate, &execute_compare_x_register);
+    instruction_array[0xE4] = std::make_pair(&get_operand_zeropage, &execute_compare_x_register);
+    instruction_array[0xEC] = std::make_pair(&get_operand_absolute, &execute_compare_x_register);
 
-    instruction_array[0xC0] = &execute_compare_y_register_immediate;
-    instruction_array[0xC4] = &execute_compare_y_register_zeropage;
-    instruction_array[0xCC] = &execute_compare_y_register_absolute;
+    instruction_array[0xC0] = std::make_pair(&get_operand_immediate, &execute_compare_y_register);
+    instruction_array[0xC4] = std::make_pair(&get_operand_zeropage, &execute_compare_y_register);
+    instruction_array[0xCC] = std::make_pair(&get_operand_absolute, &execute_compare_y_register);
 
     instruction_array[0xEA] = &execute_nop;
 }
@@ -50,7 +50,10 @@ void Instructions::execute(uint8_t opcode, ComputerState &computer_state)
 {
     increment_program_counter(computer_state);
 
-    instruction_array[opcode](computer_state);
+    OperandFunction operand_function = instruction_array[opcode].first;
+    InstructionFunction instruction_function = instruction_array[opcode].second;
+
+    instruction_function(computer_state, operand_function(computer_state));
 }
 
 void Instructions::execute_nop(ComputerState &computer_state)

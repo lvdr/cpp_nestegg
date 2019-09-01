@@ -2,6 +2,7 @@
 #define INSTRUCTIONS_H
 
 #include <array>
+#include <utility>
 
 class ComputerState;
 
@@ -52,8 +53,9 @@ public:
     static void execute_branch_on_minus(ComputerState& computer_state);
 
 private:
-    typedef void (*InstructionFunction)(ComputerState&);
-    std::array<InstructionFunction, 256> instruction_array;
+    typedef uint8_t (*OperandFunction)(ComputerState&);
+    typedef void (*InstructionFunction)(ComputerState&, uint8_t);
+    std::array<std::pair<OperandFunction, InstructionFunction>, 256> instruction_array;
 
     static void add_with_carry(ComputerState &computer_state, uint8_t operand);
     static void compare(ComputerState &computer_state, uint8_t reg, uint8_t operand);
