@@ -20,6 +20,7 @@ public:
     static void execute_add_with_carry(ComputerState &computer_state, uint8_t operand);
     static void execute_and(ComputerState &computer_state, uint8_t operand);
     static void execute_ior(ComputerState &computer_state, uint8_t operand);
+    static void execute_xor(ComputerState &computer_state, uint8_t operand);
     static void execute_compare_with_accumulator(ComputerState &state, uint8_t operand);
     static void execute_compare_with_x(ComputerState &state, uint8_t operand);
     static void execute_compare_with_y(ComputerState &state, uint8_t operand);
