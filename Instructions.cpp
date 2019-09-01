@@ -125,6 +125,7 @@ void Instructions::execute_branch_on_carry_set(ComputerState &computer_state, ui
     if (computer_state.get_status_flag(ComputerState::StatusFlag::CARRY)) {
         uint16_t new_program_counter = computer_state.get_program_counter();
         new_program_counter += static_cast<int8_t>(offset);
+        computer_state.set_program_counter(new_program_counter);
     }
 }
 
@@ -133,6 +134,7 @@ void Instructions::execute_branch_on_carry_clear(ComputerState &computer_state, 
     if (!computer_state.get_status_flag(ComputerState::StatusFlag::CARRY)) {
         uint16_t new_program_counter = computer_state.get_program_counter();
         new_program_counter += static_cast<int8_t>(offset);
+        computer_state.set_program_counter(new_program_counter);
     }
 }
 
@@ -141,6 +143,7 @@ void Instructions::execute_branch_on_equal(ComputerState &computer_state, uint8_
     if (computer_state.get_status_flag(ComputerState::StatusFlag::ZERO)) {
         uint16_t new_program_counter = computer_state.get_program_counter();
         new_program_counter += static_cast<int8_t>(offset);
+        computer_state.set_program_counter(new_program_counter);
     }
 }
 
@@ -149,6 +152,7 @@ void Instructions::execute_branch_on_not_equal(ComputerState &computer_state, ui
     if (!computer_state.get_status_flag(ComputerState::StatusFlag::ZERO)) {
         uint16_t new_program_counter = computer_state.get_program_counter();
         new_program_counter += static_cast<int8_t>(offset);
+        computer_state.set_program_counter(new_program_counter);
     }
 }
 
@@ -158,6 +162,7 @@ void Instructions::execute_branch_on_overflow_set(ComputerState &computer_state,
     if (computer_state.get_status_flag(ComputerState::StatusFlag::OVERFLOW)) {
         uint16_t new_program_counter = computer_state.get_program_counter();
         new_program_counter += static_cast<int8_t>(offset);
+        computer_state.set_program_counter(new_program_counter);
     }
 }
 
@@ -166,6 +171,7 @@ void Instructions::execute_branch_on_overflow_clear(ComputerState &computer_stat
     if (!computer_state.get_status_flag(ComputerState::StatusFlag::OVERFLOW)) {
         uint16_t new_program_counter = computer_state.get_program_counter();
         new_program_counter += static_cast<int8_t>(offset);
+        computer_state.set_program_counter(new_program_counter);
     }
 }
 
@@ -175,6 +181,7 @@ void Instructions::execute_branch_on_plus(ComputerState &computer_state, uint8_t
     if (!computer_state.get_status_flag(ComputerState::StatusFlag::NEGATIVE)) {
         uint16_t new_program_counter = computer_state.get_program_counter();
         new_program_counter += static_cast<int8_t>(offset);
+        computer_state.set_program_counter(new_program_counter);
     }
 }
 
@@ -183,6 +190,7 @@ void Instructions::execute_branch_on_minus(ComputerState &computer_state, uint8_
     if (computer_state.get_status_flag(ComputerState::StatusFlag::NEGATIVE)) {
         uint16_t new_program_counter = computer_state.get_program_counter();
         new_program_counter += static_cast<int8_t>(offset);
+        computer_state.set_program_counter(new_program_counter);
     }
 }
 
