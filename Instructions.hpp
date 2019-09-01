@@ -19,6 +19,7 @@ public:
 
     static void execute_add_with_carry(ComputerState &computer_state, uint8_t operand);
     static void execute_and(ComputerState &computer_state, uint8_t operand);
+    static void execute_ior(ComputerState &computer_state, uint8_t operand);
     static void execute_compare_with_accumulator(ComputerState &state, uint8_t operand);
     static void execute_compare_with_x(ComputerState &state, uint8_t operand);
     static void execute_compare_with_y(ComputerState &state, uint8_t operand);
@@ -43,6 +44,7 @@ public:
     static uint8_t get_operand_zeropage(ComputerState &computer_state);
     static uint8_t get_operand_zeropage_x(ComputerState &computer_state);
     static uint8_t get_operand_zeropage_y(ComputerState &computer_state);
+
 private:
     typedef uint8_t (*OperandFunction)(ComputerState&);
     typedef void (*InstructionFunction)(ComputerState&, uint8_t);

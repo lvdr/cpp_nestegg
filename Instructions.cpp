@@ -28,6 +28,16 @@ Instructions::Instructions()
     instruction_array[0x21] = std::make_pair(&get_operand_indirect_x, &execute_and);
     instruction_array[0x31] = std::make_pair(&get_operand_indirect_y, &execute_and);
 
+    // ORA
+    instruction_array[0x09] = std::make_pair(&get_operand_immediate, &execute_ior);
+    instruction_array[0x05] = std::make_pair(&get_operand_zeropage, &execute_ior);
+    instruction_array[0x15] = std::make_pair(&get_operand_zeropage_x, &execute_ior);
+    instruction_array[0x0d] = std::make_pair(&get_operand_absolute, &execute_ior);
+    instruction_array[0x1d] = std::make_pair(&get_operand_absolute_x, &execute_ior);
+    instruction_array[0x19] = std::make_pair(&get_operand_absolute_y, &execute_ior);
+    instruction_array[0x01] = std::make_pair(&get_operand_indirect_x, &execute_ior);
+    instruction_array[0x11] = std::make_pair(&get_operand_indirect_y, &execute_ior);
+
     // Branches: BPL, BMI, BVC, BVS, BCC, BCS, BEQ, BNE
     instruction_array[0x10] = std::make_pair(&get_operand_immediate, &execute_branch_on_plus);
     instruction_array[0x30] = std::make_pair(&get_operand_immediate, &execute_branch_on_minus);
@@ -119,6 +129,14 @@ void Instructions::execute_and(ComputerState &computer_state, uint8_t operand) {
     computer_state.set_status_flag(ComputerState::StatusFlag::ZERO, result & (1 << 7));
     computer_state.set_accumulator(result);
 }
+
+void Instructions::execute_ior(ComputerState &computer_state, uint8_t operand) {
+    uint8_t result = computer_state.get_accumulator() | operand;
+    computer_state.set_status_flag(ComputerState::StatusFlag::ZERO, result == 0);
+    computer_state.set_status_flag(ComputerState::StatusFlag::ZERO, result & (1 << 7));
+    computer_state.set_accumulator(result);
+}
+
 
 void Instructions::execute_compare_with_accumulator(ComputerState& computer_state, uint8_t operand)
 {
