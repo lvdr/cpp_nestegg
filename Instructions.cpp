@@ -8,6 +8,7 @@ Instructions::Instructions()
         instruction_array[opcode] = std::make_pair(&get_operand_noop, &fail_unimplemented);
     }
 
+    // ADC
     instruction_array[0x61] = std::make_pair(&get_operand_indirect_x, &execute_add_with_carry);
     instruction_array[0x65] = std::make_pair(&get_operand_zeropage, &execute_add_with_carry);
     instruction_array[0x69] = std::make_pair(&get_operand_immediate, &execute_add_with_carry);
@@ -17,6 +18,37 @@ Instructions::Instructions()
     instruction_array[0x79] = std::make_pair(&get_operand_absolute_y, &execute_add_with_carry);
     instruction_array[0x7d] = std::make_pair(&get_operand_absolute_x, &execute_add_with_carry);
 
+    // AND
+    instruction_array[0x29] = std::make_pair(&get_operand_immediate, &execute_and);
+    instruction_array[0x25] = std::make_pair(&get_operand_zeropage, &execute_and);
+    instruction_array[0x35] = std::make_pair(&get_operand_zeropage_x, &execute_and);
+    instruction_array[0x2d] = std::make_pair(&get_operand_absolute, &execute_and);
+    instruction_array[0x3d] = std::make_pair(&get_operand_absolute_x, &execute_and);
+    instruction_array[0x39] = std::make_pair(&get_operand_absolute_y, &execute_and);
+    instruction_array[0x21] = std::make_pair(&get_operand_indirect_x, &execute_and);
+    instruction_array[0x31] = std::make_pair(&get_operand_indirect_y, &execute_and);
+
+    // ORA
+    instruction_array[0x09] = std::make_pair(&get_operand_immediate, &execute_ior);
+    instruction_array[0x05] = std::make_pair(&get_operand_zeropage, &execute_ior);
+    instruction_array[0x15] = std::make_pair(&get_operand_zeropage_x, &execute_ior);
+    instruction_array[0x0d] = std::make_pair(&get_operand_absolute, &execute_ior);
+    instruction_array[0x1d] = std::make_pair(&get_operand_absolute_x, &execute_ior);
+    instruction_array[0x19] = std::make_pair(&get_operand_absolute_y, &execute_ior);
+    instruction_array[0x01] = std::make_pair(&get_operand_indirect_x, &execute_ior);
+    instruction_array[0x11] = std::make_pair(&get_operand_indirect_y, &execute_ior);
+
+    // EOR
+    instruction_array[0x49] = std::make_pair(&get_operand_immediate, &execute_xor);
+    instruction_array[0x45] = std::make_pair(&get_operand_zeropage, &execute_xor);
+    instruction_array[0x55] = std::make_pair(&get_operand_zeropage_x, &execute_xor);
+    instruction_array[0x4d] = std::make_pair(&get_operand_absolute, &execute_xor);
+    instruction_array[0x5d] = std::make_pair(&get_operand_absolute_x, &execute_xor);
+    instruction_array[0x59] = std::make_pair(&get_operand_absolute_y, &execute_xor);
+    instruction_array[0x41] = std::make_pair(&get_operand_indirect_x, &execute_xor);
+    instruction_array[0x51] = std::make_pair(&get_operand_indirect_y, &execute_xor);
+
+    // Branches: BPL, BMI, BVC, BVS, BCC, BCS, BEQ, BNE
     instruction_array[0x10] = std::make_pair(&get_operand_immediate, &execute_branch_on_plus);
     instruction_array[0x30] = std::make_pair(&get_operand_immediate, &execute_branch_on_minus);
     instruction_array[0x50] = std::make_pair(&get_operand_immediate, &execute_branch_on_overflow_clear);
@@ -26,6 +58,7 @@ Instructions::Instructions()
     instruction_array[0xd0] = std::make_pair(&get_operand_immediate, &execute_branch_on_not_equal);
     instruction_array[0xf0] = std::make_pair(&get_operand_immediate, &execute_branch_on_equal);
 
+    // CMP
     instruction_array[0xc1] = std::make_pair(&get_operand_indirect_x, &execute_compare_with_accumulator);
     instruction_array[0xc5] = std::make_pair(&get_operand_zeropage, &execute_compare_with_accumulator);
     instruction_array[0xc9] = std::make_pair(&get_operand_immediate, &execute_compare_with_accumulator);
@@ -35,15 +68,42 @@ Instructions::Instructions()
     instruction_array[0xd9] = std::make_pair(&get_operand_absolute_y, &execute_compare_with_accumulator);
     instruction_array[0xdd] = std::make_pair(&get_operand_absolute_x, &execute_compare_with_accumulator);
 
+    // CPX
     instruction_array[0xE0] = std::make_pair(&get_operand_immediate, &execute_compare_with_x);
     instruction_array[0xE4] = std::make_pair(&get_operand_zeropage, &execute_compare_with_x);
     instruction_array[0xEC] = std::make_pair(&get_operand_absolute, &execute_compare_with_x);
 
+    // CPY
     instruction_array[0xC0] = std::make_pair(&get_operand_immediate, &execute_compare_with_y);
     instruction_array[0xC4] = std::make_pair(&get_operand_zeropage, &execute_compare_with_y);
     instruction_array[0xCC] = std::make_pair(&get_operand_absolute, &execute_compare_with_y);
 
+    // NOP
     instruction_array[0xEA] = std::make_pair(&get_operand_noop, &execute_nop);
+
+    // LDA
+    instruction_array[0xa9] = std::make_pair(&get_operand_immediate, &execute_load_accumulator);
+    instruction_array[0xa5] = std::make_pair(&get_operand_zeropage, &execute_load_accumulator);
+    instruction_array[0xb5] = std::make_pair(&get_operand_zeropage_x, &execute_load_accumulator);
+    instruction_array[0xad] = std::make_pair(&get_operand_absolute, &execute_load_accumulator);
+    instruction_array[0xbd] = std::make_pair(&get_operand_absolute_x, &execute_load_accumulator);
+    instruction_array[0xb9] = std::make_pair(&get_operand_absolute_y, &execute_load_accumulator);
+    instruction_array[0xa1] = std::make_pair(&get_operand_indirect_x, &execute_load_accumulator);
+    instruction_array[0xb1] = std::make_pair(&get_operand_indirect_y, &execute_load_accumulator);
+
+    // LDX
+    instruction_array[0xa2] = std::make_pair(&get_operand_immediate, &execute_load_x);
+    instruction_array[0xa6] = std::make_pair(&get_operand_zeropage, &execute_load_x);
+    instruction_array[0xb6] = std::make_pair(&get_operand_zeropage_y, &execute_load_x);
+    instruction_array[0xae] = std::make_pair(&get_operand_absolute, &execute_load_x);
+    instruction_array[0xbe] = std::make_pair(&get_operand_absolute_y, &execute_load_x);
+
+    // LDY
+    instruction_array[0xa0] = std::make_pair(&get_operand_immediate, &execute_load_y);
+    instruction_array[0xa4] = std::make_pair(&get_operand_zeropage, &execute_load_y);
+    instruction_array[0xb4] = std::make_pair(&get_operand_zeropage_y, &execute_load_y);
+    instruction_array[0xac] = std::make_pair(&get_operand_absolute, &execute_load_y);
+    instruction_array[0xbc] = std::make_pair(&get_operand_absolute_y, &execute_load_y);
 }
 
 void Instructions::execute(uint8_t opcode, ComputerState &computer_state)
@@ -80,12 +140,6 @@ void Instructions::execute_add_with_carry(ComputerState &computer_state, uint8_t
 
     sum &= 0xFF;
 
-    bool zero = sum == 0;
-    computer_state.set_status_flag(ComputerState::StatusFlag::ZERO, zero);
-
-    bool negative = is_negative(sum);
-    computer_state.set_status_flag(ComputerState::StatusFlag::NEGATIVE, negative);
-
     bool byte_positive = !is_negative(operand);
     bool accumulator_positive = !is_negative(accumulator);
     bool sum_positive = !is_negative(sum);
@@ -93,6 +147,22 @@ void Instructions::execute_add_with_carry(ComputerState &computer_state, uint8_t
     computer_state.set_status_flag(ComputerState::StatusFlag::OVERFLOW, overflow);
 
     computer_state.set_accumulator(sum);
+}
+
+
+void Instructions::execute_and(ComputerState &computer_state, uint8_t operand) {
+    uint8_t result = computer_state.get_accumulator() & operand;
+    computer_state.set_accumulator(result);
+}
+
+void Instructions::execute_ior(ComputerState &computer_state, uint8_t operand) {
+    uint8_t result = computer_state.get_accumulator() | operand;
+    computer_state.set_accumulator(result);
+}
+
+void Instructions::execute_xor(ComputerState &computer_state, uint8_t operand) {
+    uint8_t result = computer_state.get_accumulator() ^ operand;
+    computer_state.set_accumulator(result);
 }
 
 void Instructions::execute_compare_with_accumulator(ComputerState& computer_state, uint8_t operand)
@@ -116,7 +186,7 @@ void Instructions::execute_compare_with_y(ComputerState& computer_state, uint8_t
     uint16_t result = computer_state.get_y() - operand;
     computer_state.set_status_flag(ComputerState::StatusFlag::CARRY, result & (1 << 8));
     computer_state.set_status_flag(ComputerState::StatusFlag::ZERO, result == 0);
-    computer_state.set_status_flag(ComputerState::StatusFlag::NEGATIVE, result & (1 << 7));
+    computer_state.set_status_flag(ComputerState::StatusFlag::NEGATIVE, is_negative(result));
 }
 
 
@@ -194,6 +264,20 @@ void Instructions::execute_branch_on_minus(ComputerState &computer_state, uint8_
     }
 }
 
+void Instructions::execute_load_accumulator(ComputerState& computer_state, uint8_t operand)
+{
+    computer_state.set_accumulator(operand);
+}
+
+void Instructions::execute_load_x(ComputerState& computer_state, uint8_t operand)
+{
+    computer_state.set_x(operand);
+}
+
+void Instructions::execute_load_y(ComputerState& computer_state, uint8_t operand)
+{
+    computer_state.set_y(operand);
+}
 
 uint8_t Instructions::get_immediate_byte(ComputerState &computer_state)
 {
@@ -277,7 +361,6 @@ uint8_t Instructions::get_operand_zeropage_y(ComputerState &computer_state)
     uint8_t address = get_immediate_byte(computer_state) + computer_state.get_y();
     return computer_state.get_byte_from_memory(address);
 }
-
 
 void Instructions::increment_program_counter(ComputerState &computer_state)
 {

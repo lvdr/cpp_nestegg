@@ -46,16 +46,22 @@ uint16_t ComputerState::get_program_counter()
 
 void ComputerState::set_accumulator(uint8_t new_accumulator)
 {
+    set_status_flag(StatusFlag::NEGATIVE, new_accumulator & (1 << 7));
+    set_status_flag(StatusFlag::ZERO, new_accumulator == 0);
     accumulator = new_accumulator;
 }
 
 void ComputerState::set_x(uint8_t new_x)
 {
+    set_status_flag(StatusFlag::NEGATIVE, new_x & (1 << 7));
+    set_status_flag(StatusFlag::ZERO, new_x == 0);
     x = new_x;
 }
 
 void ComputerState::set_y(uint8_t new_y)
 {
+    set_status_flag(StatusFlag::NEGATIVE, new_y & (1 << 7));
+    set_status_flag(StatusFlag::ZERO, new_y == 0);
     y = new_y;
 }
 
