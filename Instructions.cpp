@@ -80,6 +80,30 @@ Instructions::Instructions()
 
     // NOP
     instruction_array[0xEA] = std::make_pair(&get_operand_noop, &execute_nop);
+
+    // LDA
+    instruction_array[0xa9] = std::make_pair(&get_operand_immediate, &execute_load_accumulator);
+    instruction_array[0xa5] = std::make_pair(&get_operand_zeropage, &execute_load_accumulator);
+    instruction_array[0xb5] = std::make_pair(&get_operand_zeropage_x, &execute_load_accumulator);
+    instruction_array[0xad] = std::make_pair(&get_operand_absolute, &execute_load_accumulator);
+    instruction_array[0xbd] = std::make_pair(&get_operand_absolute_x, &execute_load_accumulator);
+    instruction_array[0xb9] = std::make_pair(&get_operand_absolute_y, &execute_load_accumulator);
+    instruction_array[0xa1] = std::make_pair(&get_operand_indirect_x, &execute_load_accumulator);
+    instruction_array[0xb1] = std::make_pair(&get_operand_indirect_y, &execute_load_accumulator);
+
+    // LDX
+    instruction_array[0xa2] = std::make_pair(&get_operand_immediate, &execute_load_x);
+    instruction_array[0xa6] = std::make_pair(&get_operand_zeropage, &execute_load_x);
+    instruction_array[0xb6] = std::make_pair(&get_operand_zeropage_y, &execute_load_x);
+    instruction_array[0xae] = std::make_pair(&get_operand_absolute, &execute_load_x);
+    instruction_array[0xbe] = std::make_pair(&get_operand_absolute_y, &execute_load_x);
+
+    // LDY
+    instruction_array[0xa0] = std::make_pair(&get_operand_immediate, &execute_load_y);
+    instruction_array[0xa4] = std::make_pair(&get_operand_zeropage, &execute_load_y);
+    instruction_array[0xb4] = std::make_pair(&get_operand_zeropage_y, &execute_load_y);
+    instruction_array[0xac] = std::make_pair(&get_operand_absolute, &execute_load_y);
+    instruction_array[0xbc] = std::make_pair(&get_operand_absolute_y, &execute_load_y);
 }
 
 void Instructions::execute(uint8_t opcode, ComputerState &computer_state)
@@ -240,6 +264,20 @@ void Instructions::execute_branch_on_minus(ComputerState &computer_state, uint8_
     }
 }
 
+void Instructions::execute_load_accumulator(ComputerState& computer_state, uint8_t operand)
+{
+    computer_state.set_accumulator(operand);
+}
+
+void Instructions::execute_load_x(ComputerState& computer_state, uint8_t operand)
+{
+    computer_state.set_x(operand);
+}
+
+void Instructions::execute_load_y(ComputerState& computer_state, uint8_t operand)
+{
+    computer_state.set_y(operand);
+}
 
 uint8_t Instructions::get_immediate_byte(ComputerState &computer_state)
 {

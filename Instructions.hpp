@@ -46,6 +46,10 @@ public:
     static uint8_t get_operand_zeropage_x(ComputerState &computer_state);
     static uint8_t get_operand_zeropage_y(ComputerState &computer_state);
 
+    static void execute_load_accumulator(ComputerState& computer_state, uint8_t operand);
+    static void execute_load_x(ComputerState& computer_state, uint8_t operand);
+    static void execute_load_y(ComputerState& computer_state, uint8_t operand);
+
 private:
     typedef uint8_t (*OperandFunction)(ComputerState&);
     typedef void (*InstructionFunction)(ComputerState&, uint8_t);
