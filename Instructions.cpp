@@ -116,12 +116,6 @@ void Instructions::execute_add_with_carry(ComputerState &computer_state, uint8_t
 
     sum &= 0xFF;
 
-    bool zero = sum == 0;
-    computer_state.set_status_flag(ComputerState::StatusFlag::ZERO, zero);
-
-    bool negative = is_negative(sum);
-    computer_state.set_status_flag(ComputerState::StatusFlag::NEGATIVE, negative);
-
     bool byte_positive = !is_negative(operand);
     bool accumulator_positive = !is_negative(accumulator);
     bool sum_positive = !is_negative(sum);
@@ -134,22 +128,16 @@ void Instructions::execute_add_with_carry(ComputerState &computer_state, uint8_t
 
 void Instructions::execute_and(ComputerState &computer_state, uint8_t operand) {
     uint8_t result = computer_state.get_accumulator() & operand;
-    computer_state.set_status_flag(ComputerState::StatusFlag::ZERO, result == 0);
-    computer_state.set_status_flag(ComputerState::StatusFlag::ZERO, result & (1 << 7));
     computer_state.set_accumulator(result);
 }
 
 void Instructions::execute_ior(ComputerState &computer_state, uint8_t operand) {
     uint8_t result = computer_state.get_accumulator() | operand;
-    computer_state.set_status_flag(ComputerState::StatusFlag::ZERO, result == 0);
-    computer_state.set_status_flag(ComputerState::StatusFlag::ZERO, result & (1 << 7));
     computer_state.set_accumulator(result);
 }
 
 void Instructions::execute_xor(ComputerState &computer_state, uint8_t operand) {
     uint8_t result = computer_state.get_accumulator() ^ operand;
-    computer_state.set_status_flag(ComputerState::StatusFlag::ZERO, result == 0);
-    computer_state.set_status_flag(ComputerState::StatusFlag::ZERO, result & (1 << 7));
     computer_state.set_accumulator(result);
 }
 
@@ -174,7 +162,7 @@ void Instructions::execute_compare_with_y(ComputerState& computer_state, uint8_t
     uint16_t result = computer_state.get_y() - operand;
     computer_state.set_status_flag(ComputerState::StatusFlag::CARRY, result & (1 << 8));
     computer_state.set_status_flag(ComputerState::StatusFlag::ZERO, result == 0);
-    computer_state.set_status_flag(ComputerState::StatusFlag::NEGATIVE, result & (1 << 7));
+    computer_state.set_status_flag(ComputerState::StatusFlag::NEGATIVE, is_negative(result));
 }
 
 
@@ -335,7 +323,6 @@ uint8_t Instructions::get_operand_zeropage_y(ComputerState &computer_state)
     uint8_t address = get_immediate_byte(computer_state) + computer_state.get_y();
     return computer_state.get_byte_from_memory(address);
 }
-
 
 void Instructions::increment_program_counter(ComputerState &computer_state)
 {
