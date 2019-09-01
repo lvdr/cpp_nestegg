@@ -34,11 +34,11 @@ public:
     static void execute_compare_with_accumulator_indirect_x(ComputerState &computer_state);
     static void execute_compare_with_accumulator_indirect_y(ComputerState &computer_state);
 
-    static void execute_compare_x_register_immediate(computerState &computer_state);
-    static void execute_compare_x_register_zeropage(computerState &computer_state);
-    static void execute_compare_x_register_absolute(computerState &computer_state);
+    static void execute_compare_x_register_immediate(ComputerState &computer_state);
+    static void execute_compare_x_register_zeropage(ComputerState &computer_state);
+    static void execute_compare_x_register_absolute(ComputerState &computer_state);
 
-    static void execute_compare_y_register_immediate(computerState &computer_state);
+    static void execute_compare_y_register_immediate(ComputerState &computer_state);
     static void execute_compare_y_register_zeropage(ComputerState &computer_state);
     static void execute_compare_y_register_absolute(ComputerState &computer_state);
 
@@ -56,7 +56,7 @@ private:
     std::array<InstructionFunction, 256> instruction_array;
 
     static void add_with_carry(ComputerState &computer_state, uint8_t operand);
-    static void compare_with_accumulator(ComputerState &computer_state, uint8_t operand);
+    static void compare(ComputerState &computer_state, uint8_t reg, uint8_t operand);
 
     static uint8_t get_immediate_byte(ComputerState &computer_state);
     static uint16_t get_immediate_word(ComputerState &computer_state);

@@ -35,6 +35,14 @@ Instructions::Instructions()
     instruction_array[0xd9] = &execute_compare_with_accumulator_absolute_y;
     instruction_array[0xdd] = &execute_compare_with_accumulator_absolute_x;
 
+    instruction_array[0xE0] = &execute_compare_x_register_immediate;
+    instruction_array[0xE4] = &execute_compare_x_register_zeropage;
+    instruction_array[0xEC] = &execute_compare_x_register_absolute;
+
+    instruction_array[0xC0] = &execute_compare_y_register_immediate;
+    instruction_array[0xC4] = &execute_compare_y_register_zeropage;
+    instruction_array[0xCC] = &execute_compare_y_register_absolute;
+
     instruction_array[0xEA] = &execute_nop;
 }
 
@@ -135,103 +143,94 @@ void Instructions::add_with_carry(ComputerState &computer_state, uint8_t operand
 void Instructions::execute_compare_with_accumulator_immediate(ComputerState &computer_state)
 {
     uint8_t operand = get_immediate_byte(computer_state);
-    compare_with_accumulator(compare_with_accumulator, operand);
+    compare(computer_state, computer_state.get_accumulator(), operand);
 }
 
 void Instructions::execute_compare_with_accumulator_zeropage(ComputerState &computer_state)
 {
     uint8_t operand = get_operand_zeropage(computer_state);
-    compare_with_accumulator(compare_with_accumulator, operand);
+    compare(computer_state, computer_state.get_accumulator(), operand);
 }
 
 void Instructions::execute_compare_with_accumulator_zeropage_x(ComputerState &computer_state)
 {
     uint8_t operand = get_operand_zeropage_x_indexed(computer_state);
-    compare_with_accumulator(compare_with_accumulator, operand);
+    compare(computer_state, computer_state.get_accumulator(), operand);
 }
 
 void Instructions::execute_compare_with_accumulator_absolute(ComputerState &computer_state)
 {
     uint8_t operand = get_operand_absolute(computer_state);
-    compare_with_accumulator(compare_with_accumulator, operand);
+    compare(computer_state, computer_state.get_accumulator(), operand);
 }
 
 void Instructions::execute_compare_with_accumulator_absolute_x(ComputerState &computer_state)
 {
     uint8_t operand = get_operand_absolute_x_indexed(computer_state);
-    compare_with_accumulator(compare_with_accumulator, operand);
+    compare(computer_state, computer_state.get_accumulator(), operand);
 }
 
 void Instructions::execute_compare_with_accumulator_absolute_y(ComputerState &computer_state)
 {
     uint8_t operand = get_operand_absolute_y_indexed(computer_state);
-    compare_with_accumulator(compare_with_accumulator, operand);
+    compare(computer_state, computer_state.get_accumulator(), operand);
 }
 
 void Instructions::execute_compare_with_accumulator_indirect_x(ComputerState &computer_state)
 {
-    uint8_t operand = get_operand_indirect_x_indexed(computer_state);
-    compare_with_accumulator(compare_with_accumulator, operand);
+    uint8_t operand = get_operand_x_indexed_indirect(computer_state);
+    compare(computer_state, computer_state.get_accumulator(), operand);
 }
 
 void Instructions::execute_compare_with_accumulator_indirect_y(ComputerState &computer_state)
 {
     uint8_t operand = get_operand_indirect_y_indexed(computer_state);
-    compare_with_accumulator(compare_with_accumulator, operand);
+    compare(computer_state, computer_state.get_accumulator(), operand);
 }
 
-void Instructions::execute_compare_x_register_immediate(computerState &computer_state)
+void Instructions::execute_compare_x_register_immediate(ComputerState &computer_state)
 {
-    
+    uint8_t operand = get_immediate_byte(computer_state);
+    compare(computer_state, computer_state.get_x(), operand);
 }
 
-void Instructions::execute_compare_x_register_zeropage(computerState &computer_state)
+void Instructions::execute_compare_x_register_zeropage(ComputerState &computer_state)
 {
-    
+    uint8_t operand = get_operand_zeropage(computer_state);
+    compare(computer_state, computer_state.get_x(), operand);
 }
 
-void Instructions::execute_compare_x_register_absolute(computerState &computer_state)
+void Instructions::execute_compare_x_register_absolute(ComputerState &computer_state)
 {
-    
+    uint8_t operand = get_operand_absolute(computer_state);
+    compare(computer_state, computer_state.get_x(), operand);
 }
 
-void Instructions::execute_compare_y_register_immediate(computerState &computer_state)
+void Instructions::execute_compare_y_register_immediate(ComputerState &computer_state)
 {
-    
+    uint8_t operand = get_immediate_byte(computer_state);
+    compare(computer_state, computer_state.get_y(), operand);
 }
 
 void Instructions::execute_compare_y_register_zeropage(ComputerState &computer_state)
 {
-    
+    uint8_t operand = get_operand_zeropage(computer_state);
+    compare(computer_state, computer_state.get_y(), operand);
 }
 
 void Instructions::execute_compare_y_register_absolute(ComputerState &computer_state)
 {
-    
+    uint8_t operand = get_operand_absolute(computer_state);
+    compare(computer_state, computer_state.get_y(), operand);
 }
 
 
-void Instructions::compare_with_accumulator(ComputerState &computer_state, uint8_t operand)
+void Instructions::compare(ComputerState &computer_state, uint8_t reg, uint8_t operand)
 {
-    uint8_t accumulator = computer_state.get_accumulator();
-
-    if (accumulator >= operand) {
-        computer_state.set_status_flag(ComputerState::StatusFlag::CARRY, true);
-    } else {
-        computer_state.set_status_flag(ComputerState::StatusFlag::CARRY, false);
-    }
-
-    if (accumulator == operand) {
-        computer_state.set_status_flag(ComputerState::StatusFlag::ZERO, true);
-    } else {
-        computer_state.set_status_flag(ComputerState::StatusFlag::ZERO, false);
-    }
-
-    if (accumulator >= $80) {
-        computer_state.set_status_flag(ComputerState::StatusFlag::NEGATIVE, true);
-    } else {
-        computer_state.set_status_flag(ComputerState::StatusFlag::NEGATIVE, false);
-    }
+    uint16_t result = reg - operand;
+    computer_state.set_status_flag(ComputerState::StatusFlag::CARRY, result & (1 << 8));
+    computer_state.set_status_flag(ComputerState::StatusFlag::ZERO, result == 0);
+    computer_state.set_status_flag(ComputerState::StatusFlag::NEGATIVE, result & (1 << 7));
 }
 
 void Instructions::execute_branch_on_carry_set(ComputerState &computer_state)
