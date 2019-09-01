@@ -48,6 +48,9 @@ Instructions::Instructions()
     instruction_array[0x41] = std::make_pair(&get_operand_indirect_x, &execute_xor);
     instruction_array[0x51] = std::make_pair(&get_operand_indirect_y, &execute_xor);
 
+    instruction_array[0x24] = std::make_pair(&get_operand_zeropage, &execute_test_bits);
+    instruction_array[0x2c] = std::make_pair(&get_operand_absolute, &execute_test_bits);
+
     // Branches: BPL, BMI, BVC, BVS, BCC, BCS, BEQ, BNE
     instruction_array[0x10] = std::make_pair(&get_operand_immediate, &execute_branch_on_plus);
     instruction_array[0x30] = std::make_pair(&get_operand_immediate, &execute_branch_on_minus);
@@ -163,6 +166,16 @@ void Instructions::execute_ior(ComputerState &computer_state, uint8_t operand) {
 void Instructions::execute_xor(ComputerState &computer_state, uint8_t operand) {
     uint8_t result = computer_state.get_accumulator() ^ operand;
     computer_state.set_accumulator(result);
+}
+
+void Instructions::execute_test_bits(ComputerState &computer_state, uint8_t operand)
+{
+    uint8_t accumulator = computer_state.get_accumulator();
+    uint8_t result = accumulator & operand;
+
+    computer_state.set_status_flag(ComputerState::StatusFlag::NEGATIVE, result & (1 << 7));
+    computer_state.set_status_flag(ComputerState::StatusFlag::OVERFLOW, result & (1 << 6));
+    computer_state.set_status_flag(ComputerState::StatusFlag::ZERO, result == 0);
 }
 
 void Instructions::execute_compare_with_accumulator(ComputerState& computer_state, uint8_t operand)
