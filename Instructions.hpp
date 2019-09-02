@@ -50,6 +50,8 @@ public:
     static void execute_load_x(ComputerState& computer_state, uint8_t operand);
     static void execute_load_y(ComputerState& computer_state, uint8_t operand);
 
+    static void execute_test_bits(ComputerState& computer_state, uint8_t operand);
+
 private:
     typedef uint8_t (*OperandFunction)(ComputerState&);
     typedef void (*InstructionFunction)(ComputerState&, uint8_t);

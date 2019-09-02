@@ -56,7 +56,7 @@ public:
     void load_memory(std::vector<uint8_t> data);
     std::vector<uint8_t> dump_memory();
 
-    void step(size_t steps);
+    void step(size_t steps = 1);
 
 private:
     Instructions instructions;
