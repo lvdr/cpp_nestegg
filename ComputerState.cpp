@@ -6,12 +6,12 @@ ComputerState::ComputerState(size_t memory_size) : instructions()
 {
     memory = std::vector<uint8_t>(memory_size);
 
-    uint8_t accumulator = 0;
-    uint8_t x = 0;
-    uint8_t y = 0;
-    uint8_t status = 0;
-    uint8_t stack_pointer = 0;
-    uint16_t program_counter = 0;
+    accumulator = 0;
+    x = 0;
+    y = 0;
+    status = 0;
+    stack_pointer = 0;
+    program_counter = 0;
 }
 
 uint8_t ComputerState::get_accumulator()
