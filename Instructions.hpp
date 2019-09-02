@@ -34,6 +34,11 @@ public:
     static void execute_branch_on_plus(ComputerState& computer_state, uint8_t offset);
     static void execute_branch_on_minus(ComputerState& computer_state, uint8_t offset);
 
+    static void execute_increment_memory_absolute(ComputerState& computer_state, uint8_t unused);
+    static void execute_increment_memory_absolute_x(ComputerState& computer_state, uint8_t unused);
+    static void execute_increment_memory_zeropage(ComputerState& computer_state, uint8_t unused);
+    static void execute_increment_memory_zeropage_x(ComputerState& computer_state, uint8_t unused);
+
     static uint8_t get_operand_noop(ComputerState &ComputerState);
     static uint8_t get_operand_immediate(ComputerState &ComputerState);
     static uint8_t get_operand_absolute(ComputerState &computer_state);
