@@ -61,10 +61,10 @@ Instructions::Instructions()
     instruction_array[0xd0] = std::make_pair(&get_operand_immediate, &execute_branch_on_not_equal);
     instruction_array[0xf0] = std::make_pair(&get_operand_immediate, &execute_branch_on_equal);
 
-    instruction_array[0xb0] = std::make_pair(&get_operand_noop, &execute_increment_memory_absolute);
-    instruction_array[0xb0] = std::make_pair(&get_operand_noop, &execute_increment_memory_absolute_x);
-    instruction_array[0xb0] = std::make_pair(&get_operand_noop, &execute_increment_memory_zeropage);
-    instruction_array[0xb0] = std::make_pair(&get_operand_noop, &execute_increment_memory_zeropage_x);
+    instruction_array[0xee] = std::make_pair(&get_operand_noop, &execute_increment_memory_absolute);
+    instruction_array[0xfe] = std::make_pair(&get_operand_noop, &execute_increment_memory_absolute_x);
+    instruction_array[0xe6] = std::make_pair(&get_operand_noop, &execute_increment_memory_zeropage);
+    instruction_array[0xf6] = std::make_pair(&get_operand_noop, &execute_increment_memory_zeropage_x);
 
     // CMP
     instruction_array[0xc1] = std::make_pair(&get_operand_indirect_x, &execute_compare_with_accumulator);
