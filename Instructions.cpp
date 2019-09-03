@@ -61,6 +61,11 @@ Instructions::Instructions()
     instruction_array[0xd0] = std::make_pair(&get_operand_immediate, &execute_branch_on_not_equal);
     instruction_array[0xf0] = std::make_pair(&get_operand_immediate, &execute_branch_on_equal);
 
+    instruction_array[0xee] = std::make_pair(&get_operand_noop, &execute_increment_memory_absolute);
+    instruction_array[0xfe] = std::make_pair(&get_operand_noop, &execute_increment_memory_absolute_x);
+    instruction_array[0xe6] = std::make_pair(&get_operand_noop, &execute_increment_memory_zeropage);
+    instruction_array[0xf6] = std::make_pair(&get_operand_noop, &execute_increment_memory_zeropage_x);
+
     // CMP
     instruction_array[0xc1] = std::make_pair(&get_operand_indirect_x, &execute_compare_with_accumulator);
     instruction_array[0xc5] = std::make_pair(&get_operand_zeropage, &execute_compare_with_accumulator);
@@ -276,6 +281,37 @@ void Instructions::execute_branch_on_minus(ComputerState &computer_state, uint8_
         computer_state.set_program_counter(new_program_counter);
     }
 }
+
+void Instructions::execute_increment_memory_absolute(ComputerState& computer_state, uint8_t unused)
+{
+    uint16_t address = get_immediate_word();
+    uint8_t byte = computer_state.get_byte_from_memory(address);
+    computer_state.set_byte_to_memory(address, byte + 1);
+}
+
+void Instructions::execute_increment_memory_absolute_x(ComputerState& computer_state, uint8_t unused)
+{
+    uint16_t address = get_immediate_word();
+    uint8_t offset = computer_state.get_x();
+    uint8_t byte = computer_state.get_byte_from_memory(address + offset);
+    computer_state.set_byte_to_memory(address + offset, byte + 1);
+}
+
+void Instructions::execute_increment_memory_zeropage(ComputerState& computer_state, uint8_t unused)
+{
+    uint16_t address = get_immediate_byte();
+    uint8_t byte = computer_state.get_byte_from_memory(address);
+    computer_state.set_byte_to_memory(address, byte + 1);
+}
+
+void Instructions::execute_increment_memory_zeropage_x(ComputerState& computer_state, uint8_t unused)
+{
+    uint16_t address = get_immediate_byte();
+    uint8_t offset = computer_state.get_x();
+    uint8_t byte = computer_state.get_byte_from_memory(address + offset);
+    computer_state.set_byte_to_memory(address + offset, byte + 1);
+}
+
 
 void Instructions::execute_load_accumulator(ComputerState& computer_state, uint8_t operand)
 {
