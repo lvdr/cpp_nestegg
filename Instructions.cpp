@@ -292,7 +292,7 @@ void Instructions::execute_increment_memory_absolute(ComputerState& computer_sta
 void Instructions::execute_increment_memory_absolute_x(ComputerState& computer_state, uint8_t unused)
 {
     uint16_t address = get_immediate_word();
-    uint8_t offset = get_immediate_byte();
+    uint8_t offset = computer_state.get_x();
     uint8_t byte = computer_state.get_byte_from_memory(address + offset);
     computer_state.set_byte_to_memory(address + offset, byte + 1);
 }
@@ -307,7 +307,7 @@ void Instructions::execute_increment_memory_zeropage(ComputerState& computer_sta
 void Instructions::execute_increment_memory_zeropage_x(ComputerState& computer_state, uint8_t unused)
 {
     uint16_t address = get_immediate_byte();
-    uint8_t offset = get_immediate_byte();
+    uint8_t offset = computer_state.get_x();
     uint8_t byte = computer_state.get_byte_from_memory(address + offset);
     computer_state.set_byte_to_memory(address + offset, byte + 1);
 }
