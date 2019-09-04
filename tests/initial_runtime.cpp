@@ -5,6 +5,11 @@
 #define CATCH_CONFIG_MAIN
 
 #include "catch.hpp"
+enum Offset {
+    None = 0,
+    X = 1,
+    Y = 2
+};
 
 void run_and_test(ComputerState &comp, std::vector<uint8_t> results, int substeps = 1) {
     REQUIRE(comp.get_accumulator() == 0);
@@ -44,7 +49,14 @@ void test_immediate_operation(uint8_t opcode, std::vector<uint8_t> operands, std
     run_and_test(comp, results, substeps);
 }
 
-void test_zeropage_operation(uint8_t opcode, std::vector<uint8_t> operands, std::vector<uint8_t> results) {
+void test_zeropage_operation(uint8_t opcode, std::vector<uint8_t> operands, std::vector<uint8_t> results, bool with_initialization = false, Offset offset = Offset::None) {
+
+    if (with_initialization) {
+        assert(operands.size() == 2*results.size());
+    } else {
+        assert(operands.size() == results.size());
+    }
+
     // Build a vector of addresses from the end of the zeropage for operands
     std::vector<uint8_t> addresses(operands.size());
     uint8_t start_address = 0x100 - operands.size();
@@ -52,16 +64,105 @@ void test_zeropage_operation(uint8_t opcode, std::vector<uint8_t> operands, std:
     // Shuffle addresses
     std::random_shuffle(addresses.begin(), addresses.end());
 
-    std::vector<uint8_t> initial_memory(0x100);
-    for (size_t i = 0; i < operands.size(); ++i) {
-        initial_memory[i*2] = opcode;
-        initial_memory[i*2+1] = addresses[i];
-        initial_memory[addresses[i]] = operands[i];
+    ComputerState comp(1024);
+
+    uint8_t base_offset = 0;
+
+    if (offset == Offset::X || offset == Offset::Y) {
+        base_offset = start_address;
+
+        for (size_t i = 0; i < addresses.size(); ++i) {
+            addresses[i] -= base_offset;
+        }
+
+        if (offset == Offset::X) {
+            comp.set_x(base_offset);
+        } else {
+            comp.set_y(base_offset);
+        }
     }
 
-    ComputerState comp(1024);
+    std::vector<uint8_t> initial_memory(0x100);
+
+    int substeps = 1;
+    if (with_initialization) {
+        substeps = 2;
+    }
+
+    for (size_t i = 0; i < operands.size(); i += substeps) {
+        if (with_initialization) {
+            initial_memory[i*2] = 0xa9; // LDA IMM
+            initial_memory[i*2+1] = operands[i];
+            initial_memory[i*2+2] = opcode;
+            initial_memory[i*2+3] = addresses[i+1];
+            initial_memory[addresses[i+1] + base_offset] = operands[i+1];
+        } else {
+            initial_memory[i*2] = opcode;
+            initial_memory[i*2+1] = addresses[i];
+            initial_memory[addresses[i] + base_offset] = operands[i];
+        }
+    }
+
     comp.load_memory(initial_memory);
-    run_and_test(comp, results);
+    run_and_test(comp, results, substeps);
+}
+
+void test_absolute_operation(uint8_t opcode, std::vector<uint8_t> operands, std::vector<uint8_t> results, bool with_initialization = false, Offset offset = Offset::None) {
+
+    if (with_initialization) {
+        assert(operands.size() == 2*results.size());
+    } else {
+        assert(operands.size() == results.size());
+    }
+    // Build a vector of addresses from memory for operands
+    std::vector<uint16_t> addresses(operands.size());
+    uint8_t start_address = 0x400 - operands.size();
+    std::iota(addresses.begin(), addresses.end(), start_address);
+    // Shuffle addresses
+    std::random_shuffle(addresses.begin(), addresses.end());
+
+    ComputerState comp(0x800);
+
+    uint8_t base_offset = 0;
+
+    if (offset == Offset::X || offset == Offset::Y) {
+        base_offset = start_address;
+
+        for (size_t i = 0; i < addresses.size(); ++i) {
+            addresses[i] -= base_offset;
+        }
+
+        if (offset == Offset::X) {
+            comp.set_x(base_offset);
+        } else {
+            comp.set_y(base_offset);
+        }
+    }
+
+    std::vector<uint8_t> initial_memory(0x100);
+    int substeps = 1;
+    if (with_initialization) {
+        substeps = 2;
+    }
+
+    for (size_t i = 0; i < results.size(); ++i) {
+        if (with_initialization) {
+            initial_memory[i*5] = 0xa9; // LDA Imm
+            initial_memory[i*5+1] = operands.at(i*2);
+            initial_memory[i*5+2] = opcode;
+            initial_memory[i*5+3] = addresses.at(i) & 0xff;
+            initial_memory[i*5+4] = (addresses.at(i) >> 8) & 0xff;
+            initial_memory[addresses.at(i) + base_offset] = operands[i*2+1];
+        } else {
+            initial_memory[i*3] = opcode;
+            initial_memory[i*3+1] = addresses[i] & 0xff;
+            initial_memory[i*3+2] = (addresses[i] >> 8) & 0xff;
+            initial_memory[addresses[i] + base_offset] = operands[i];
+        }
+    }
+
+    comp.load_memory(initial_memory);
+    run_and_test(comp, results, substeps);
 }
 
 TEST_CASE( "NOP", "[base]" ) {
@@ -85,6 +186,22 @@ TEST_CASE( "ADC", "[opset]" ) {
         INFO("Testing add with zeropage addressing");
         test_zeropage_operation(0x65, operands, results);
     }
+    {
+        INFO("Testing add with zeropage X addressing");
+        test_zeropage_operation(0x75, operands, results, false, Offset::X);
+    }
+    {
+        INFO("Testing add with absolute addressing");
+        test_absolute_operation(0x6d, operands, results);
+    }
+    {
+        INFO("Testing add with absolute X addressing");
+        test_absolute_operation(0x7d, operands, results, false, Offset::X);
+    }
+    {
+        INFO("Testing add with absolute Y addressing");
+        test_absolute_operation(0x79, operands, results, false, Offset::Y);
+    }
 }
 
 TEST_CASE( "LDA", "[opset]" ) {
@@ -103,6 +220,22 @@ TEST_CASE( "LDA", "[opset]" ) {
         INFO("Testing LDA with zeropage addressing");
         test_zeropage_operation(0xa5, values, values);
     }
+    {
+        INFO("Testing LDA with zeropage X addressing");
+        test_zeropage_operation(0xb5, values, values, false, Offset::X);
+    }
+    {
+        INFO("Testing LDA with absolute addressing");
+        test_absolute_operation(0xad, values, values);
+    }
+    {
+        INFO("Testing LDA with absolute X addressing");
+        test_absolute_operation(0xbd, values, values, false, Offset::X);
+    }
+    {
+        INFO("Testing LDA with absolute Y addressing");
+        test_absolute_operation(0xb9, values, values, false, Offset::Y);
+    }
 }
 
 TEST_CASE( "AND", "[opset]" ) {
@@ -120,5 +253,25 @@ TEST_CASE( "AND", "[opset]" ) {
     {
         INFO("Testing AND with immediate addressing");
         test_immediate_operation(0x29, values, results, true);
+    }
+    {
+        INFO("Testing AND with zeropage addressing");
+        test_zeropage_operation(0x25, values, results, true);
+    }
+    {
+        INFO("Testing AND with zeropage X addressing");
+        test_zeropage_operation(0x35, values, results, true, Offset::X);
+    }
+    {
+        INFO("Testing AND with absolute addressing");
+        test_absolute_operation(0x2d, values, results, true);
+    }
+    {
+        INFO("Testing AND with absolute X addressing");
+        test_absolute_operation(0x3d, values, results, true, Offset::X);
+    }
+    {
+        INFO("Testing AND with absolute Y addressing");
+        test_absolute_operation(0x39, values, results, true, Offset::Y);
     }
 }
