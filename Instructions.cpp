@@ -112,6 +112,14 @@ Instructions::Instructions()
     instruction_array[0xb4] = std::make_pair(&get_operand_zeropage_y, &execute_load_y);
     instruction_array[0xac] = std::make_pair(&get_operand_absolute, &execute_load_y);
     instruction_array[0xbc] = std::make_pair(&get_operand_absolute_y, &execute_load_y);
+
+    // TAX
+    instruction_array[0x00] = std::make_pair(&get_operand_accumulator, &execute_load_x);
+    instruction_array[0x00] = std::make_pair(&get_operand_accumulator, &execute_load_y);
+    instruction_array[0x00] = std::make_pair(&get_operand_x, &execute_load_accumulator);
+    instruction_array[0x00] = std::make_pair(&get_operand_x, &execute_load_stack_pointer);
+    instruction_array[0x00] = std::make_pair(&get_operand_y, &execute_load_accumulator);
+    instruction_array[0x00] = std::make_pair(&get_operand_stack_pointer, &execute_load_x);
 }
 
 void Instructions::execute(uint8_t opcode, ComputerState &computer_state)
