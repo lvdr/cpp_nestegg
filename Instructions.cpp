@@ -114,12 +114,12 @@ Instructions::Instructions()
     instruction_array[0xbc] = std::make_pair(&get_operand_absolute_y, &execute_load_y);
 
     // TAX
-    instruction_array[0x00] = std::make_pair(&get_operand_accumulator, &execute_load_x);
-    instruction_array[0x00] = std::make_pair(&get_operand_accumulator, &execute_load_y);
-    instruction_array[0x00] = std::make_pair(&get_operand_x, &execute_load_accumulator);
-    instruction_array[0x00] = std::make_pair(&get_operand_x, &execute_load_stack_pointer);
-    instruction_array[0x00] = std::make_pair(&get_operand_y, &execute_load_accumulator);
-    instruction_array[0x00] = std::make_pair(&get_operand_stack_pointer, &execute_load_x);
+    instruction_array[0xaa] = std::make_pair(&get_operand_accumulator, &execute_load_x);
+    instruction_array[0xa8] = std::make_pair(&get_operand_accumulator, &execute_load_y);
+    instruction_array[0x8a] = std::make_pair(&get_operand_x, &execute_load_accumulator);
+    instruction_array[0x9a] = std::make_pair(&get_operand_x, &execute_load_stack_pointer);
+    instruction_array[0x98] = std::make_pair(&get_operand_y, &execute_load_accumulator);
+    instruction_array[0xba] = std::make_pair(&get_operand_stack_pointer, &execute_load_x);
 }
 
 void Instructions::execute(uint8_t opcode, ComputerState &computer_state)
@@ -336,6 +336,11 @@ void Instructions::execute_load_y(ComputerState& computer_state, uint8_t operand
     computer_state.set_y(operand);
 }
 
+void Instructions::execute_load_stack_pointer(ComputerState& computer_state, uint8_t operand)
+{
+    computer_state.set_stack_pointer(operand);
+}
+
 uint8_t Instructions::get_immediate_byte(ComputerState &computer_state)
 {
     uint8_t byte = computer_state.get_byte_from_memory(computer_state.get_program_counter());
@@ -417,6 +422,27 @@ uint8_t Instructions::get_operand_zeropage_y(ComputerState &computer_state)
 {
     uint8_t address = get_immediate_byte(computer_state) + computer_state.get_y();
     return computer_state.get_byte_from_memory(address);
+}
+
+
+uint8_t get_operand_accumulator(ComputerState &computer_state)
+{
+    return computer_state.get_accumulator();
+}
+
+uint8_t get_operand_x(ComputerState &computer_state)
+{
+    return computer_state.get_x();
+}
+
+uint8_t get_operand_y(ComputerState &computer_state)
+{
+    return computer_state.get_y();
+}
+
+uint8_t get_operand_stack_pointer(ComputerState &computer_state)
+{
+    return computer_state.get_stack_pointer();
 }
 
 void Instructions::increment_program_counter(ComputerState &computer_state)
